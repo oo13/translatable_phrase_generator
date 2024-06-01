@@ -436,9 +436,7 @@ Note:
 
 # Requirement
 
-This module supports Lua 5.1, and requires [lua-utf8](https://github.com/starwing/luautf8) unless you stick to the plain 8-bit character encoding.
-
-This module has not tested in Lua 5.2 and higher.
+This module supports Lua 5.1 to 5.4, and requires [lua-utf8](https://github.com/starwing/luautf8) unless you stick to the plain 8-bit character encoding.
 
 # License
 This module is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.

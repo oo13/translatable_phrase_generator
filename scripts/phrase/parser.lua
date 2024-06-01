@@ -20,7 +20,7 @@ Copyright © 2024 OOTA, Masato
 
 local utf8_support, utf8 = pcall(require, "utf8") -- Naev provides lua-utf8 as "utf8".
 if not utf8_support or not utf8.gsub then
-   utf8_support, utf8 = pcall(require, "lua-utf8") -- https://github.com/starwing/luautf8
+   utf8_support, utf8 = pcall(require, "lua-utf8") -- luarocks --local install luautf8, or https://github.com/starwing/luautf8
 end
 
 -- 8-bit encoding version.

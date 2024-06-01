@@ -1,0 +1,36 @@
+name: unit_test
+on:
+  push:
+    paths:
+      - '*.lua'
+      - 'test/*'
+  pull_request:
+    paths:
+      - '*.lua'
+      - 'test/*'
+
+jobs:
+  unit_test:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        version: [5.1, 5.2, 5.3, 5.4]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Lua
+        run: sudo apt-get install lua${{ matrix.version }} liblua${{ matrix.version }}-dev luarocks
+
+      - name: Configure Luarocks
+        run: luarocks config lua_version ${{ matrix.version }}
+
+      - name: Install lua-utf8
+        run: luarocks --local install luautf8
+
+      - name: Run Test
+        working-directory: test
+        run: ./test_all ${{ matrix.version }}

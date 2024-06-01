@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+VER=$1
+
+luarocks config lua_version ${VER}
+eval `luarocks path`
+lua${VER} test_main_normal.lua
+lua${VER} test_encoding_error.lua
