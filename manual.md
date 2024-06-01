@@ -302,7 +302,7 @@ Errors:
 
 Note:
 - "text" doesn't need to have the assignment for 'main'.
-- output_error() and output_compile_error() is if when some errors are detected.
+- output_error() and output_compile_error() is called if when some errors are detected.
 
 ### set_random_function(f)
 
@@ -430,7 +430,7 @@ Errors:
 
 Note:
 - "text_or_compiled" doesn't need to have the assignment for 'main'.
-- output_error() and output_compile_error() is if when some errors are detected.
+- output_error() and output_compile_error() is called if when some errors are detected.
 - The production rules for the existing nonterminals is overwritten if "text_or_compiled" has the assignment for the same nonterminal.
 - compile() is called if "text_or_compiled" is a string.
 
