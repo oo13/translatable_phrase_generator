@@ -2,7 +2,7 @@
 This module can generate various phrases with a syntax expressed by a text, which can be translated to generate a phrase in other languages. (The way to translate is such as gettext, but it's outside the scope of this module.)
 
 # Example
-`_()` is a translating function.
+`_()` is a function to translate.
 
 ## A simple example
 
@@ -132,7 +132,7 @@ It can use to create a common library with some assignments, but the number of t
 
 # Syntax of the Phrase Syntax
 ## Overview
-The phrase syntax consists of assignments. The order of the assignments doesn't affect the generated text.
+The phrase syntax consists of assignments. The order of the assignments doesn't affect the generated text. The recursive reference is not allowed.
 
 It needs a definition of the nonterminal "main" as the start condition to generate the phrase.
 
