@@ -254,7 +254,7 @@ text_begin = ? [^ \t\n"'`|~{}] ? | expansion ; (* "}" is the next to the text wh
 text_body = { ? [^\n|~{}] ? | expansion } ;
 text_postfix = space_opt, ( $ | '\n' | '|' | '~' | '}' ) ; (* This space_opt is greedy match. It isn't a part of the text. *)
 expansion = "{", [ { ? [^}] ? } ], "}" ;
-number = [ { ? [0-9] ? } ], [ "." , [ { ? [0-9] ? } ] ] ;
+number = ( ( { ? [0-9] ? }, [ "." ] ) | ( ".", ? [0-9] ? ) ), [ { ? [0-9] ? } ] ;
 
 gsubs = [ { "~", space_one_nl_opt, sep, { pat }, sep2, [ { pat } ], sep2, [ ( "g" | integer ) ], space_opt } ] ; (* 'sep2' is the same character of 'sep'. *)
 sep = ? [^ \t\n{] ? ; (* '{' may be the beginning of the comment block. *)

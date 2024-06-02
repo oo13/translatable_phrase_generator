@@ -146,6 +146,43 @@ function test_parser.run_test()
       return r == "text1" and ph:get_weight() == 3
    end
 
+   function tests.text_quoted_with_real_number_1()
+      local ph = phrase.new()
+      ph:add([[
+         main = text1 | "text2" 2.1
+      ]])
+      local r = ph:generate()
+      return r == "text1" and ph:get_weight() == 3.1
+   end
+
+   function tests.text_quoted_with_real_number_2()
+      local ph = phrase.new()
+      ph:add([[
+         main = text1 | "text2" .32
+      ]])
+      local r = ph:generate()
+      return r == "text1" and ph:get_weight() == 1.32
+   end
+
+   function tests.text_quoted_with_all_decimals()
+      local ph = phrase.new()
+      ph:add([[
+         main = text1 | "text2" 12345678901.
+      ]])
+      local r = ph:generate()
+      return r == "text1" and ph:get_weight() == 12345678902
+   end
+
+   function tests.text_quoted_number_decimal_only()
+      error_is_expected = true
+      local ph = phrase.new()
+      ph:add([[
+         main = text1 | "text2" .
+      ]])
+      local r = ph:generate()
+      return r == "nil"
+   end
+
    function tests.text_nonquoted()
       local ph = phrase.new()
       ph:add([[
@@ -281,6 +318,33 @@ function test_parser.run_test()
       local ph = phrase.new()
       ph:add([[
          main = 1 | 2 | 3~|A|C|g~/B/D/11 ~ "C""]])
+      local r = ph:generate()
+      return r == "1"
+   end
+
+   function tests.gsub_with_real_number()
+      error_is_expected = true
+      local ph = phrase.new()
+      ph:add([[
+         main = 1 | 2 | 3 ~ ~A~B~1.1]])
+      local r = ph:generate()
+      return r == "nil"
+   end
+
+   function tests.gsub_with_integer_number()
+      local ph = phrase.new()
+      ph:add([[
+         main = 1 | 2 | 3 ~
+           /@//0 ~
+           /A//1 ~
+           /B//2 ~
+           /C//3 ~
+           /D//4 ~
+           /E//5 ~
+           /F//6 ~
+           /G//7 ~
+           /H//8 ~
+           /I//9]])
       local r = ph:generate()
       return r == "1"
    end

@@ -396,7 +396,7 @@ local parse_quoted_text, parse_non_quoted_text, parse_expansion
           "`", [ { ? [^`{] ? | expansion } ], "`", space_opt, [ number ] ;
    text_begin = ? [^ \t\n"'`|~{}] ? | expansion ; (* "}" is the next to the text when it's in {= ...}. *)
    expansion = "{", [ { ? [^}] ? } ], "}" ;
-   number = [ { ? [0-9] ? } ], [ "." , [ { ? [0-9] ? } ] ] ;
+   number = ( ( { ? [0-9] ? }, [ "." ] ) | ( ".", ? [0-9] ? ) ), [ { ? [0-9] ? } ] ;
 --]]
 function parse_text(it)
    local c = it:getc()
@@ -568,40 +568,59 @@ function parse_expansion(it, text, pre_s)
 end
 
 
---[[
-   Parse a number.
-
-   number = [ { ? [0-9] ? } ], [ "." , [ { ? [0-9] ? } ] ] ;
-   integer = { ? [0-9] ? } ;
---]]
-function parse_number(it, is_int)
-   local s = ""
-   local c = it:getc()
-   while c and string.find(c, "[0-9]") do
-      s = s .. c
-      it:next()
-      c = it:getc()
-   end
-   if is_int and c == "." then
-      s = s .. c
-      it:next()
-      c = it:getc()
-      while c and string.find(c, "[0-9]") do
-         s = s .. c
-         it:next()
-         c = it:getc()
-      end
-   end
-   if s == "" then
-      return nil
+-- Is the current position a decimal number character?
+local function is_decimal_number_char(c)
+   if c and string.find("0123456789", c, 1, true) then
+      return true
    else
-      return tonumber(s)
+      return false
    end
 end
 
 
+--[[
+   Parse a number.
+
+   number = ( ( { ? [0-9] ? }, [ "." ] ) | ( ".", ? [0-9] ? ) ), [ { ? [0-9] ? } ] ;
+--]]
+function parse_number(it)
+   local s = ""
+   local c = it:getc()
+   if c == "." then
+      it:next()
+      c = it:getc()
+      if is_decimal_number_char(c) then
+         s = "." .. c
+         it:next()
+         c = it:getc()
+      else
+         throw_parse_error(it, 'A number is expected. ("." is not a number.)')
+      end
+   elseif is_decimal_number_char(c) then
+      repeat
+         s = s .. c
+         it:next()
+         c = it:getc()
+      until not is_decimal_number_char(c)
+      if c == "." then
+         s = s .. c
+         it:next()
+         c = it:getc()
+      end
+   else
+      return nil
+   end
+   while is_decimal_number_char(c) do
+      s = s .. c
+      it:next()
+      c = it:getc()
+   end
+   return tonumber(s)
+end
+
+
 -- forward declaration
-local parse_pattern
+local parse_pattern, parse_integer
 
 --[[
    Parse an gsubs.
@@ -624,7 +643,7 @@ function parse_gsubs(it)
 
       local pat = parse_pattern(it, sep, false)
       local repl = parse_pattern(it, sep, true)
-      local n = parse_number(it, true)
+      local n = parse_integer(it)
       if n == nil then
          if it:getc() == "g" then
             it:next()
@@ -636,6 +655,27 @@ function parse_gsubs(it)
       skip_space(it)
    end
    return gsubs
+end
+
+
+--[[
+   Parse an integer.
+
+   integer = { ? [0-9] ? } ;
+--]]
+function parse_integer(it)
+   local c = it:getc()
+   if is_decimal_number_char(c) then
+      local s = ""
+      repeat
+         s = s .. c
+         it:next()
+         c = it:getc()
+      until not is_decimal_number_char(c)
+      return tonumber(s)
+   else
+      return nil
+   end
 end
 
 
