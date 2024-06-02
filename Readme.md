@@ -76,6 +76,20 @@ main = あなたは{ECONOMICAL_SITUATION}です。 |
        /貧乏な船/粗末な船/ ~
        /裕福な船/豪華な船/
 ```
+If you use a simple substitution instead of a translatable phrase generator, it cannot translate. For example:
+```
+   if (rand() > 0.5) {
+      word = _("poor");
+   } else {
+      word = _("rich");
+   }
+   if (rand() > 0.5) {
+      message = format(_("You are %s."), word);
+   } else {
+      message = format(_("You purchased a %s ship."), word);
+   }
+```
+The translator can create only two independent messages at most but Japanese translator need four independent messages.
 
 # Requirement
 

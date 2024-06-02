@@ -251,7 +251,7 @@ end
 --[[
    Skip spaces and a newline.
 
-   space_one_nl_opt = [ { space } ], [ nl , [ { space } ] ] ;
+   space_one_nl_opt = space_opt, [ nl , space_opt ] ;
 --]]
 local function skip_space_one_nl(it)
    skip_space(it)
@@ -391,9 +391,9 @@ local parse_quoted_text, parse_non_quoted_text, parse_expansion
 
    text = ε |
           text_begin, [ text_body, [ text_postfix ] ] |
-          '"', [ { ( ? all characters ? - '"' ) | expansion } ], '"', space_opt, [ number ] |
-          "'", [ { ( ? all characters ? - "'" ) | expansion } ], "'", space_opt, [ number ] |
-          "`", [ { ( ? all characters ? - "`" ) | expansion } ], "`", space_opt, [ number ] ;
+          '"', [ { ? [^"{] ? | expansion } ], '"', space_opt, [ number ] |
+          "'", [ { ? [^'{] ? | expansion } ], "'", space_opt, [ number ] |
+          "`", [ { ? [^`{] ? | expansion } ], "`", space_opt, [ number ] ;
    text_begin = ? [^ \t\n"'`|~{}] ? | expansion ; (* "}" is the next to the text when it's in {= ...}. *)
    expansion = "{", [ { ? [^}] ? } ], "}" ;
    number = [ { ? [0-9] ? } ], [ "." , [ { ? [0-9] ? } ] ] ;
@@ -417,9 +417,9 @@ local parse_number
    Parse a quoted text.
 
    text = ...
-          '"', [ { ( ? all characters ? - '"' ) | expansion } ], '"' space_opt [ number ] |
-          "'", [ { ( ? all characters ? - "'" ) | expansion } ], "'"  space_opt [ number ] |
-          "`", [ { ( ? all characters ? - "`" ) | expansion } ], "`"  space_opt [ number ] ;
+          '"', [ { ? [^"{] ? | expansion } ], '"', space_opt, [ number ] |
+          "'", [ { ? [^'{] ? | expansion } ], "'", space_opt, [ number ] |
+          "`", [ { ? [^`{] ? | expansion } ], "`", space_opt, [ number ] ;
 --]]
 function parse_quoted_text(it)
    local text = data.new_text()

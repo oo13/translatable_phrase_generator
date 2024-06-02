@@ -172,10 +172,10 @@ The chance to select {A21} is 35%, {A22} is 35%. {A1} and {A2} aren't affected b
 
 ## Production rule
 
-The production rule consist of options and gsubs. For example `"text1 | text2 | text3 ~ /pat1/repl1/ ~ /pat2/repl2/g"`.
+The production rule consist of options and gsubs. For example: `text1 | text2 | text3 ~ /pat1/repl1/ ~ /pat2/repl2/g`
 
 ## Options
-The options are texts separated "|". For example `"text1 | text2 | text3"`.
+The options are texts separated "|". For example: `text1 | text2 | text3`
 
 ## Text
 The text is the candidate for the result of the production rule.
@@ -199,7 +199,7 @@ The text doesn't need to enclose quotations ('"', "'", or "`") if it meets these
    1. The end of the text is not the spaces. (The spaces succeeded by the text are not a part of the text. The expansion is a part of the text even if the expansion results the spaces or the empty string.)
    1. The text is not followed by a weight number. (The number is a part of the text.)
 
-The text may have expansions, which is a string enclosed by "{" and "}". It can include any character except "}". The rule is prior to the above rules, for example `" {"} "` is a valid text.
+The text may have expansions, which is a string enclosed by "{" and "}". The text can contain "{" only as the beginning of the expansion, and the expansion can include any character except "}". The rule is prior to the above rules, for example `" {"} "` is a valid text.
 
 ## Expansion
 The string enclosed by "{" and "}" is the expansion, which will be expanded into a text. "{" and "}" can enclose any character except "}".
@@ -207,7 +207,7 @@ The string enclosed by "{" and "}" is the expansion, which will be expanded into
 1. If the string enclosed "{" and "}" has only alphabet, numeric, and low line characters ("[A-Za-z0-9_]"), it's a nonterminal. If the nonterminal is assigned to a production rule or a parameter, the expansion will be expanded into the generated text.
 1. "{(}" and "{)}" will be expanded into "{" and "}".
 1. If the beginning of the expansion is "{*", the expansion will be expanded into the empty string. (Technically speaking, it's not a comment block.)
-1. If the beginning of the expansion is "{=" or "{:=", the content (except the first "=" or ":=") is considered as a production rule. For example, "{= A|B|C}" will be expanded into the result of the production rule "A|B|C". The syntax of the content is expressed by EBNF: ```"content = space_nl_opt, production_rule, space_nl_opt ;"``` "{:=" is, of course, the equalized select version of "{=".
+1. If the beginning of the expansion is "{=" or "{:=", the content (except the first "=" or ":=") is considered as a production rule. For example, "{= A|B|C}" will be expanded into the result of the production rule "A|B|C". The syntax of the content is expressed by EBNF: `content = space_nl_opt, production_rule, space_nl_opt ;` "{:=" is, of course, the equalized select version of "{=".
 1. The unsolved expansion will be expanded into itself removed outer "{" and "}". (I recommend that the nonterminal is noticeable to find it easily unless you will leave it unsolved.)
 
 ## Gsub (Global substitution)
@@ -240,16 +240,16 @@ assignment = nonterminal, space_opt, operator, space_one_nl_opt, production_rule
 nonterminal = { ? [A-Za-z0-9_] ? } ;
 operator = "=" | ":=" ;
 space_opt = [ { space } ] ;
-space_one_nl_opt = [ { space } ], [ nl , [ { space } ] ] ;
+space_one_nl_opt = space_opt, [ nl , space_opt ] ;
 
 production_rule = options, gsubs ;
 
 options = text, space_opt, [ { "|", space_one_nl_opt, text, space_opt } ] ;
 text = ε |
        text_begin, [ text_body, [ text_postfix ] ] |
-       '"', [ { ( ? all characters ? - '"' ) | expansion } ], '"', space_opt, [ number ] |
-       "'", [ { ( ? all characters ? - "'" ) | expansion } ], "'", space_opt, [ number ] |
-       "`", [ { ( ? all characters ? - "`" ) | expansion } ], "`", space_opt, [ number ] ;
+       '"', [ { ? [^"{] ? | expansion } ], '"', space_opt, [ number ] |
+       "'", [ { ? [^'{] ? | expansion } ], "'", space_opt, [ number ] |
+       "`", [ { ? [^`{] ? | expansion } ], "`", space_opt, [ number ] ;
 text_begin = ? [^ \t\n"'`|~{}] ? | expansion ; (* "}" is the next to the text when it's in {= ...}. *)
 text_body = { ? [^\n|~}] ? | expansion } ;
 text_postfix = space_opt, ( $ | '\n' | '|' | '~' | '}' ) ; (* This space_opt is greedy match. It isn't a part of the text. *)
@@ -316,7 +316,7 @@ Note:
 
 ### require_utf8(enable)
 
-It configures the requirement for the character encoding, and try to enable it. Different character encodings have different semantics of the gsub, so you should use UTF-8 unless you are quite sure what you are doing.
+It configures the requirement for the character encoding, and try to enable it. Different character encodings have different semantics of the gsub.
 
 Parameter:
 - If "enable" is true or nil, UTF-8 support is required and tried to enable. (Default)
@@ -328,6 +328,7 @@ Return:
 Note:
 - lua-utf8.gsub() is used when UTF-8 support is enabled.
 - string.gsub() is used when the plain 8-bit encoding is enabled.
+- The separator character for gsub is one character in each encoding, not a byte.
 - Counting the column number in the error message depends on the encoding.
 
 ### output_error(err_msg)
