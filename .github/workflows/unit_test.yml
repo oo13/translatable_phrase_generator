@@ -2,11 +2,11 @@ name: unit_test
 on:
   push:
     paths:
-      - '*.lua'
+      - '**.lua'
       - 'test/*'
   pull_request:
     paths:
-      - '*.lua'
+      - '**.lua'
       - 'test/*'
 
 jobs:
