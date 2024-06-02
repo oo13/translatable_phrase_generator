@@ -240,7 +240,7 @@ assignment = nonterminal, space_opt, operator, space_one_nl_opt, production_rule
 nonterminal = { ? [A-Za-z0-9_] ? } ;
 operator = "=" | ":=" ;
 space_opt = [ { space } ] ;
-space_one_nl_opt = space_opt, [ nl , space_opt ] ;
+space_one_nl_opt = space_opt, [ nl, space_opt ] ;
 
 production_rule = options, gsubs ;
 
@@ -251,7 +251,7 @@ text = ε |
        "'", [ { ? [^'{] ? | expansion } ], "'", space_opt, [ number ] |
        "`", [ { ? [^`{] ? | expansion } ], "`", space_opt, [ number ] ;
 text_begin = ? [^ \t\n"'`|~{}] ? | expansion ; (* "}" is the next to the text when it's in {= ...}. *)
-text_body = { ? [^\n|~}] ? | expansion } ;
+text_body = { ? [^\n|~{}] ? | expansion } ;
 text_postfix = space_opt, ( $ | '\n' | '|' | '~' | '}' ) ; (* This space_opt is greedy match. It isn't a part of the text. *)
 expansion = "{", [ { ? [^}] ? } ], "}" ;
 number = [ { ? [0-9] ? } ], [ "." , [ { ? [0-9] ? } ] ] ;

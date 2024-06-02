@@ -251,7 +251,7 @@ end
 --[[
    Skip spaces and a newline.
 
-   space_one_nl_opt = space_opt, [ nl , space_opt ] ;
+   space_one_nl_opt = space_opt, [ nl, space_opt ] ;
 --]]
 local function skip_space_one_nl(it)
    skip_space(it)
@@ -453,7 +453,7 @@ end
    text = ...
           text_begin, [ text_body, [ text_postfix ] ] |
           ... ;
-   text_body = { ? [^\n|~}] ? | expansion } ;
+   text_body = { ? [^\n|~{}] ? | expansion } ;
    text_postfix = space_opt, ( $ | '\n' | '|' | '~' | '}' ) ; (* This space_opt is greedy match. It isn't a part of the text. *)
 --]]
 function parse_non_quoted_text(it)
