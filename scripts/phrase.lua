@@ -150,7 +150,8 @@ function compiled_syntax_add(self, text_or_compiled)
    if type(text_or_compiled) == "string" then
       compiled_to_add = phrase.compile(text_or_compiled)
    elseif type(text_or_compiled) == "table" and text_or_compiled.type_compiled_syntax then
-      compiled_to_add = text_or_compiled
+      compiled_to_add = {}
+      compiled_to_add.data = text_or_compiled.data:clone()
    else
       phrase.output_error("Invalid parameter type.")
    end

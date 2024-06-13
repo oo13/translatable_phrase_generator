@@ -345,6 +345,69 @@ function test_generator.run_test()
       return ph:generate({ B = "body" }) == "HEAD BODY TAIL"
    end
 
+   function tests.sharing_syntax()
+      local common = phrase.compile([[
+         sub = {sub2}
+      ]])
+      local main1 = phrase.compile([[
+         main = {sub}
+         sub2 = 1
+      ]])
+      local main2 = phrase.compile([[
+         main = {sub}
+         sub2 = 2
+      ]])
+      main1:add(common)
+      main2:add(common)
+      local ph1 = phrase.new(main1)
+      local ph2 = phrase.new(main2)
+      return ph1:generate() == "1" and ph2:generate() == "2"
+   end
+
+   function tests.sharing_syntax_dist()
+      local common = phrase.compile([[
+         sub = {sub2}
+      ]])
+      local main1 = phrase.compile([[
+         main = {sub}
+         sub2 = 1 | 2 | 3 | 4
+      ]])
+      local main2 = phrase.compile([[
+         main = {sub}
+         sub2 = A | B
+      ]])
+      main1:add(common)
+      main2:add(common)
+      local ph1 = phrase.new(main1)
+      local ph2 = phrase.new(main2)
+
+      phrase.set_random_function(math.random)
+
+      local result1 = {}
+      for i = 1, 100000 do
+         result1[i] = ph1:generate()
+      end
+      local dist1 = {
+         ["1"] = 0.25,
+         ["2"] = 0.25,
+         ["3"] = 0.25,
+         ["4"] = 0.25,
+      }
+      local good1 = check_distribution(result1, dist1, 0.01)
+
+      local result2 = {}
+      for i = 1, 100000 do
+         result2[i] = ph2:generate()
+      end
+      local dist2 = {
+         ["A"] = 0.5,
+         ["B"] = 0.5,
+      }
+      local good2 = check_distribution(result2, dist2, 0.01)
+
+      return good1 and good2
+   end
+
    return ut:runner("Generator Test", tests, { verbose = false })
 end
 

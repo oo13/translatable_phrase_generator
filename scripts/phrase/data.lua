@@ -79,6 +79,7 @@ end
 --[[
    text structure
    It represents a text, including nonterminals and production rules to replace into some expressions.
+   Note: It cannot be shared by multiple syntaxes.
 
    Private data:
    .parts[n]: The part of the text, the nonterminal, or the production rule.
@@ -97,6 +98,8 @@ end
    .add_anon_rule(): used by the parser.
    .set_weight(): used by the parser.
    .bind_syntax(): bind the unsolved nonterminals.
+
+   .clone(): clone this.
 
    Type ID:
    .type_text: the ID of the type
@@ -194,12 +197,39 @@ function data.new_text()
       return err_msg
    end
 
+   text.clone = function (self)
+      local new = data.new_text()
+      new.weight_by_user = self.weight_by_user
+
+      for i = 1, #self.parts do
+         if self.parts[i].clone then
+            new.parts[i] = self.parts[i]:clone()
+            new.f[i] = function (param)
+               return new.parts[i]:generate(param)
+            end
+         else
+            new.parts[i] = self.parts[i]
+            if self.f[i] then
+               new.f[i] = function (param)
+                  if type(param) == "table" and param[key] ~= nil then
+                     return tostring(param[key])
+                  else
+                     return key
+                  end
+               end
+             end
+         end
+      end
+      return new
+   end
+
    return text
 end
 
 --[[
    options structure
    It represents the options of the text.
+   Note: It cannot be shared by multiple syntaxes.
 
    Private data:
    .texts[n]: An option of the text.
@@ -214,6 +244,8 @@ end
    .add_text(): used by the parser.
    .equalize_chance(): used by the parser.
    .bind_syntax(): bind the unsolved nonterminals.
+
+   .clone(): clone this.
 
    Type ID:
    .type_options: the ID of the type
@@ -283,6 +315,16 @@ function data.new_options()
       return err_msg
    end
 
+   options.clone = function (self)
+      local new = data.new_options()
+      new.equalized_chance = self.equalized_chance
+      for i = 1, #self.texts do
+         new.texts[i] = self.texts[i]:clone()
+         new.weights[i] = i -- initial value
+      end
+      return new
+   end
+
    return options
 end
 
@@ -333,6 +375,7 @@ end
 --[[
    production_rule structure
    It represents the production rule.
+   Note: It cannot be shared by multiple syntaxes.
 
    Private data:
    .options: options in the production rule.
@@ -347,6 +390,8 @@ end
    .set_gsubs(): used by the parser.
    .equalize_chance(): used by the parser.
    .bind_syntax(): bind the unsolved nonterminals.
+
+   .clone(): clone this.
 
    Type ID:
    .type_production_rule: the ID of the type
@@ -402,6 +447,15 @@ function data.new_production_rule()
       return err_msg
    end
 
+   rule.clone = function (self)
+      local new = data.new_production_rule()
+      new.gsubs = self.gsubs -- gsubs are harmless.
+      if self.options then
+         new.options = self.options:clone()
+      end
+      return new
+   end
+
    return rule
 end
 
@@ -411,7 +465,7 @@ end
 
    Private data:
    .assignments: key: nonterminal, value: production_rule
-   .binded: already executed bind_rule().
+   .binded: already executed bind_syntax().
 
    Public functions:
    .generate(): generate a text.
@@ -423,6 +477,8 @@ end
 
    .add(): used by the parser.
    .bind_syntax(): bind the unsolved nonterminals.
+
+   .clone(): clone this.
 
    Type ID:
    .type_syntax: the ID of the type
@@ -489,6 +545,14 @@ function data.new_syntax ()
          self.binded = err_msg == ""
       end
       return err_msg
+   end
+
+   syntax.clone = function (self)
+      local new = data.new_syntax()
+      for k, v in pairs(self.assignments) do
+         new.assignments[k] = v:clone()
+      end
+      return new
    end
 
    return syntax
