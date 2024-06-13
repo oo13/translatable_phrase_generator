@@ -45,9 +45,10 @@ function test_generator.run_test()
    end
 
    -- check the distribution
-   local function check_distribution(result, dist, allowance)
+   local function check_distribution(ph, gen, num, dist, allowance)
       local count = {}
-      for _, t in ipairs(result) do
+      for i = 1, num do
+         local t = gen(ph)
          if dist[t] then
             if count[t] then
                count[t] = count[t] + 1
@@ -59,12 +60,11 @@ function test_generator.run_test()
             return false
          end
       end
-      local total = #result
       local match = true
       for t, ep in pairs(dist) do
          local op = 0
          if count[t] then
-            op = count[t] / total
+            op = count[t] / num
          end
          if math.abs(op - ep) > allowance then
             io.stderr:write('"' .. t .. '"\'s probability ' .. op .. ' is not match the expected ' .. ep .. '.\n')
@@ -147,10 +147,6 @@ function test_generator.run_test()
          A22 = 5 | 6 | 7 | 8 | 9
       ]])
       phrase.set_random_function(math.random)
-      local result = {}
-      for i = 1, 100000 do
-         result[i] = ph:generate()
-      end
       local dist = {
          ["0"] = 0.1,
          ["1"] = 0.1,
@@ -163,7 +159,7 @@ function test_generator.run_test()
          ["8"] = 0.1,
          ["9"] = 0.1,
       }
-      return check_distribution(result, dist, 0.01)
+      return check_distribution(ph, ph.generate, 100000, dist, 0.01)
    end
 
    function tests.optinos_distribution_equalized()
@@ -175,10 +171,6 @@ function test_generator.run_test()
          A22 = 5 | 6 | 7 | 8 | 9
       ]])
       phrase.set_random_function(math.random)
-      local result = {}
-      for i = 1, 100000 do
-         result[i] = ph:generate()
-      end
       local dist = {
          ["0"] = 0.1,
          ["1"] = 0.1,
@@ -191,7 +183,7 @@ function test_generator.run_test()
          ["8"] = 0.07,
          ["9"] = 0.07,
       }
-      return check_distribution(result, dist, 0.01)
+      return check_distribution(ph, ph.generate, 100000, dist, 0.01)
    end
 
    function tests.optinos_distribution_weighted()
@@ -201,10 +193,6 @@ function test_generator.run_test()
          C = 1 | 2 | 3
       ]])
       phrase.set_random_function(math.random)
-      local result = {}
-      for i = 1, 100000 do
-         result[i] = ph:generate()
-      end
       local dist = {
          ["text1"] = 0.25,
          ["text2"] = 0.25,
@@ -212,7 +200,7 @@ function test_generator.run_test()
          ["2"] = 0.1667,
          ["3"] = 0.1667,
       }
-      return check_distribution(result, dist, 0.01)
+      return check_distribution(ph, ph.generate, 100000, dist, 0.01)
    end
 
    function tests.optinos_distribution_binary_search()
@@ -225,10 +213,6 @@ function test_generator.run_test()
            "30" | "31" | "32" | "33" 2 | "34" | "35" | "36" | "37" | "38" | "39"
       ]])
       phrase.set_random_function(math.random)
-      local result = {}
-      for i = 1, 100000 do
-         result[i] = ph:generate()
-      end
       local d = 1.0 / 50.0
       local dist = {
          ["00"] = 5*d, ["01"] = d, ["02"] = d, ["03"] = d, ["04"] = d,
@@ -240,7 +224,7 @@ function test_generator.run_test()
          ["30"] = d, ["31"] = d, ["32"] = d, ["33"] = 2*d, ["34"] = d,
          ["35"] = d, ["36"] = d, ["37"] = d, ["38"] = d, ["39"] = d,
       }
-      return check_distribution(result, dist, 0.01)
+      return check_distribution(ph, ph.generate, 100000, dist, 0.01)
    end
 
    function tests.anonymous_rule()
@@ -383,27 +367,19 @@ function test_generator.run_test()
 
       phrase.set_random_function(math.random)
 
-      local result1 = {}
-      for i = 1, 100000 do
-         result1[i] = ph1:generate()
-      end
       local dist1 = {
          ["1"] = 0.25,
          ["2"] = 0.25,
          ["3"] = 0.25,
          ["4"] = 0.25,
       }
-      local good1 = check_distribution(result1, dist1, 0.01)
+      local good1 = check_distribution(ph1, ph1.generate, 100000, dist1, 0.01)
 
-      local result2 = {}
-      for i = 1, 100000 do
-         result2[i] = ph2:generate()
-      end
       local dist2 = {
          ["A"] = 0.5,
          ["B"] = 0.5,
       }
-      local good2 = check_distribution(result2, dist2, 0.01)
+      local good2 = check_distribution(ph2, ph2.generate, 100000, dist2, 0.01)
 
       return good1 and good2
    end
