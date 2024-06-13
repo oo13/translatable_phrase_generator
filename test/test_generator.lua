@@ -77,6 +77,13 @@ function test_generator.run_test()
 
    local tests = {}
 
+   function tests.no_optinos()
+      local ph = phrase.new([[
+         main =
+      ]])
+      return ph:generate() == ""
+   end
+
    function tests.no_weight_optinos()
       local ph = phrase.new([[
          main = A | B | C
