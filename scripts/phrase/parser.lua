@@ -244,7 +244,7 @@ end
    nl = "\n" ;
 --]]
 function skip_space_nl(it)
-   return skip_space(it, true)
+   skip_space(it, true)
 end
 
 
