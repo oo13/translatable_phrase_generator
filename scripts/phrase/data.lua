@@ -82,8 +82,9 @@ end
    Note: It cannot be shared by multiple syntaxes.
 
    Private data:
-   .parts[n]: The part of the text, the nonterminal, or the production rule.
-   .f[n]: The function to generate the part of the text if .parts[n] is a nonterminal.
+   .kinds[n]: The kind in the position. 0: string, 1: expansion, 2: anonymous rule.
+   .parts[n]: The part of the text, or the nonterminal.
+   .rules[n]: The production rule in the potision.
    .comb: The combination number of the possible expressions.
    .weight: The weight of the text as an option.
    .weight_by_user: The weight is set by user.
@@ -106,8 +107,9 @@ end
 --]]
 function data.new_text()
    local text = {}
+   text.kinds = {}
    text.parts = {}
-   text.f = {}
+   text.rules = {}
    text.comb = 1
    text.weight = 1
    text.weight_by_user = false
@@ -123,38 +125,34 @@ function data.new_text()
 
    text.generate = function (self, param)
       local s = ""
-      for i = 1, #self.parts do
-         if self.f[i] then
-            s = s .. self.f[i](param)
-         else
+      for i = 1, #self.kinds do
+         if self.rules[i] then
+            s = s .. self.rules[i]:generate(param)
+         elseif self.kinds[i] == 0 or not param or not param[self.parts[i]] then
             s = s .. self.parts[i]
+         else
+            s = s .. param[self.parts[i]]
          end
       end
       return s
    end
 
    text.add_string = function (self, part_of_text)
-      self.parts[#self.parts + 1] = part_of_text
+      local new_idx = #self.kinds + 1
+      self.kinds[new_idx] = 0
+      self.parts[new_idx] = part_of_text
    end
 
    text.add_expansion = function (self, key)
       local new_idx = #self.parts + 1
+      self.kinds[new_idx] = 1
       self.parts[new_idx] = key
-      self.f[new_idx] = function (param)
-         if type(param) == "table" and param[key] ~= nil then
-            return tostring(param[key])
-         else
-            return key
-         end
-      end
    end
 
    text.add_anon_rule = function (self, rule)
       local new_idx = #self.parts + 1
-      self.parts[new_idx] = rule
-      self.f[new_idx] = function (param)
-         return rule:generate(param)
-      end
+      self.kinds[new_idx] = 2
+      self.rules[new_idx] = rule
    end
 
    text.set_weight = function (self, w)
@@ -166,29 +164,28 @@ function data.new_text()
       local err_msg = ""
       self.comb = 1
       local weight = 1
-      for i = 1, #self.parts do
-         if self.f[i] then
+      for i = 1, #self.kinds do
+         local rule = nil
+         if self.kinds[i] == 2 then
+            rule = self.rules[i]
+            err_msg = err_msg .. rule:bind_syntax(syntax, used_keys)
+         elseif self.kinds[i] == 1 then
             local key = self.parts[i]
-            local is_anon_rule = type(key) == "table"
-            if not is_anon_rule and used_keys[key] then
-               err_msg = err_msg .. 'Recursive expansion of "' .. key .. '" is detected.\n'
-            elseif is_anon_rule or syntax:has_nonterminal(key) then
-               local rule
-               if is_anon_rule then
-                  rule = key
-                  err_msg = err_msg .. rule:bind_syntax(syntax, used_keys)
+            if syntax:has_nonterminal(key) then
+               if used_keys[key] then
+                  err_msg = err_msg .. 'Recursive expansion of "' .. key .. '" is detected.\n'
                else
                   rule = syntax:get_production_rule(key)
                   used_keys[key] = true
                   err_msg = err_msg .. rule:bind_syntax(syntax, used_keys)
                   used_keys[key] = nil
-                  self.f[i] = function (param)
-                     return rule:generate(param)
-                  end
+                  self.rules[i] = rule
                end
-               self.comb = self.comb * rule:get_combination_number()
-               weight = weight * rule:get_weight()
             end
+         end
+         if rule then
+            self.comb = self.comb * rule:get_combination_number()
+            weight = weight * rule:get_weight()
          end
       end
       if not self.weight_by_user then
@@ -201,23 +198,11 @@ function data.new_text()
       local new = data.new_text()
       new.weight_by_user = self.weight_by_user
 
-      for i = 1, #self.parts do
-         if self.parts[i].clone then
-            new.parts[i] = self.parts[i]:clone()
-            new.f[i] = function (param)
-               return new.parts[i]:generate(param)
-            end
-         else
-            new.parts[i] = self.parts[i]
-            if self.f[i] then
-               new.f[i] = function (param)
-                  if type(param) == "table" and param[key] ~= nil then
-                     return tostring(param[key])
-                  else
-                     return key
-                  end
-               end
-             end
+      for i = 1, #self.kinds do
+         new.kinds[i] = self.kinds[i]
+         new.parts[i] = self.parts[i]
+         if self.rules[i] then
+            new.rules[i] = self.rules[i]:clone()
          end
       end
       return new
