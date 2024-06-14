@@ -98,7 +98,7 @@ function test_generator.run_test()
          r3 == "C"
    end
 
-   function tests.weighed_optinos()
+   function tests.weighted_optinos()
       local ph = phrase.new([[
          main = A | "B" 2 | "C" 3
       ]])
@@ -118,7 +118,7 @@ function test_generator.run_test()
          r6 == "C"
    end
 
-   function tests.weighed_and_equalized_optinos()
+   function tests.weighted_and_equalized_optinos()
       local ph = phrase.new([[
          main := A | "B" 2 | "C" 3
       ]])
@@ -241,7 +241,7 @@ function test_generator.run_test()
          r3 == "1C2"
    end
 
-   function tests.anonymous_rule_weighed()
+   function tests.anonymous_rule_weighted()
       local ph = phrase.new([[
          main = 1{= A | "B" 2 | "C" 3}2
       ]])
@@ -261,7 +261,7 @@ function test_generator.run_test()
          r6 == "1C2"
    end
 
-   function tests.anonymous_rule_weighed_and_equalized()
+   function tests.anonymous_rule_weighted_and_equalized()
       local ph = phrase.new([[
          main = 1{:=A | "B" 2 | "C" 3 }2
       ]])
