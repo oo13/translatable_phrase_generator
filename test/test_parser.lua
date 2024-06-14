@@ -349,6 +349,15 @@ function test_parser.run_test()
       return r == "1"
    end
 
+   function tests.parse_error_last_line()
+      error_is_expected = true
+      local ph = phrase.new()
+      ph:add([[
+         main = 1 | 2 | 3 ~ /A//+]])
+      local r = ph:generate()
+      return r == "nil"
+   end
+
    return ut:runner("Parser Test", tests, { verbose = false })
 end
 
