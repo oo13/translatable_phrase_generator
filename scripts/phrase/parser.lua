@@ -119,10 +119,6 @@ function parser.parse(text)
       skip_space_nl(it)
    end
 
-   if err_msg == "" then
-      err_msg = syntax:bind_syntax()
-   end
-
    return syntax, err_msg
 end
 

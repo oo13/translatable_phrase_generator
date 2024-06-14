@@ -68,14 +68,15 @@ function phrase:add(text_or_compiled)
       syntax, err_msg = phrase_parser.parse(text)
    elseif type(text_or_compiled) == "table" and text_or_compiled.type_compiled_syntax then
       text = nil
+      err_msg = ""
       syntax = text_or_compiled.data
-      err_msg = syntax:bind_syntax()
    else
       phrase.output_error("Invalid parameter type.")
       return false
    end
    if err_msg == "" then
-      if not self.data:add(syntax) then
+      err_msg = syntax:bind_syntax()
+      if err_msg == "" and not self.data:add(syntax) then
          err_msg = 'The nonterminal "main" doesn\'t exist.\n'
       end
    end
