@@ -194,6 +194,7 @@ C = 1 | 2 | 3
 The chance of "text1" is 25%, "text2" is 25%, "{C}" is 50%. The chance of "{C}" is lower than no weight.
 
 The text doesn't need to enclose quotations ('"', "'", or "`") if it meets these requirements:
+   1. The text is not empty.
    1. The text has neither newline, "|", "~", nor "}".
    1. The beginning of the text is other than the spaces and quotations. (The spaces preceded by the text are not a part of the text.)
    1. The end of the text is not the spaces. (The spaces succeeded by the text are not a part of the text. The expansion is a part of the text even if the expansion results the spaces or the empty string.)
@@ -245,8 +246,7 @@ space_one_nl_opt = space_opt, [ nl, space_opt ] ;
 production_rule = options, gsubs ;
 
 options = text, space_opt, [ { "|", space_one_nl_opt, text, space_opt } ] ;
-text = ε |
-       text_begin, [ text_body, [ text_postfix ] ] |
+text = text_begin, [ text_body, [ text_postfix ] ] |
        '"', [ { ? [^"{] ? | expansion } ], '"', space_opt, [ number ] |
        "'", [ { ? [^'{] ? | expansion } ], "'", space_opt, [ number ] |
        "`", [ { ? [^`{] ? | expansion } ], "`", space_opt, [ number ] ;

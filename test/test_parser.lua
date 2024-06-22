@@ -196,16 +196,13 @@ function test_parser.run_test()
    function tests.text_empty()
       local ph = phrase.new()
       ph:add([[
-         main = 	| |||| {*
-         comment }
-           |
-           {* comment } |
-      |]])
+         main = 	'' | "" | `` | {} | '' | {*
+         comment }"" |
+             '{* comment }' |
+      ``]])
       local r = ph:generate()
-      return r == "" and ph:get_combination_number() == 9
+      return r == "" and ph:get_combination_number() == 8
    end
-
-
 
    function tests.expansion_prior_rule()
       local ph = phrase.new()

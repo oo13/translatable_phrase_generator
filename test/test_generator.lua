@@ -79,7 +79,7 @@ function test_generator.run_test()
 
    function tests.no_optinos()
       local ph = phrase.new([[
-         main =
+         main = ""
       ]])
       return ph:generate() == ""
    end

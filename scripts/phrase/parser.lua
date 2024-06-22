@@ -385,8 +385,7 @@ local parse_quoted_text, parse_non_quoted_text, parse_expansion
 --[[
    Parse a text.
 
-   text = ε |
-          text_begin, [ text_body, [ text_postfix ] ] |
+   text = text_begin, [ text_body, [ text_postfix ] ] |
           '"', [ { ? [^"{] ? | expansion } ], '"', space_opt, [ number ] |
           "'", [ { ? [^'{] ? | expansion } ], "'", space_opt, [ number ] |
           "`", [ { ? [^`{] ? | expansion } ], "`", space_opt, [ number ] ;
@@ -397,6 +396,7 @@ local parse_quoted_text, parse_non_quoted_text, parse_expansion
 function parse_text(it)
    local c = it:getc()
    if it:eot() or string.find(" \t\n|~}", c, 1, true) then
+      throw_parse_error(it, "A text is expected.")
       return data.new_text()
    elseif c == '"' or c == "'" or c == "`" then
       return parse_quoted_text(it)
