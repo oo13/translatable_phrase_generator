@@ -355,6 +355,19 @@ function test_parser.run_test()
       return r == "nil"
    end
 
+   function tests.recursive_expansion_error()
+      error_is_expected = true
+      local ph = phrase.new()
+      ph:add([[
+         main = {A}
+         A = {B}
+         B = {C}
+         C = {B}
+      ]])
+      local r = ph:generate()
+      return r == "nil"
+   end
+
    return ut:runner("Parser Test", tests, { verbose = false })
 end
 
