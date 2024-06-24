@@ -124,15 +124,15 @@ function data.new_text()
       return self.weight
    end
 
-   text.generate = function (self, param)
+   text.generate = function (self, ext_context)
       local s = ""
       for i = 1, #self.kinds do
          if self.rules[i] then
-            s = s .. self.rules[i]:generate(param)
-         elseif self.kinds[i] == 0 or not param or not param[self.parts[i]] then
+            s = s .. self.rules[i]:generate(ext_context)
+         elseif self.kinds[i] == 0 or not ext_context or not ext_context[self.parts[i]] then
             s = s .. self.parts[i]
          else
-            s = s .. param[self.parts[i]]
+            s = s .. ext_context[self.parts[i]]
          end
       end
       return s
@@ -261,7 +261,7 @@ function data.new_options()
    options.equalized_chance = false
    options.type_options = true
 
-   options.generate = function (self, param)
+   options.generate = function (self, ext_context)
       local i = 1
       if #self.texts > 1 then
          if self.equalized_chance then
@@ -271,7 +271,7 @@ function data.new_options()
             i = search_index(r, self.weights)
          end
       end
-      return self.texts[i]:generate(param)
+      return self.texts[i]:generate(ext_context)
    end
 
    options.get_weight = function (self)
@@ -413,10 +413,10 @@ function data.new_production_rule()
    local rule = {}
    rule.type_production_rule = true
 
-   rule.generate = function (self, param)
+   rule.generate = function (self, ext_context)
       local s = ""
       if self.options then
-         s = self.options:generate(param)
+         s = self.options:generate(ext_context)
       end
       if self.gsubs then
          s = self.gsubs:gsub(s)
@@ -512,9 +512,9 @@ function data.new_syntax ()
    syntax.binded = false
    syntax.type_syntax = true
 
-   syntax.generate = function (self, param)
+   syntax.generate = function (self, ext_context)
       if self:is_valid() then
-         return self.assignments["main"]:generate(param)
+         return self.assignments["main"]:generate(ext_context)
       else
          return "nil"
       end
@@ -626,7 +626,7 @@ function data.new_phrase_data ()
    phrase.equalized_chance = false
    phrase.type_phrase_data = true
 
-   phrase.generate = function (self, param)
+   phrase.generate = function (self, ext_context)
       if #self.syntaxes >= 1 then
          local i = 1
          if #self.syntaxes > 1 then
@@ -637,7 +637,7 @@ function data.new_phrase_data ()
                i = search_index(r, self.weights)
             end
          end
-         return self.syntaxes[i]:generate(param)
+         return self.syntaxes[i]:generate(ext_context)
       else
          return "nil"
       end

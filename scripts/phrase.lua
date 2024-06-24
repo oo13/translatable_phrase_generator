@@ -91,13 +91,13 @@ end
 --[[
    Generate a phrase.
 
-   param: param  nil, or a table that has a set of the nonterminal and the value.
+   param: ext_context  nil, or a table that has a set of the nonterminal and the value.
    return: A phrase text.
 
-   note: 'param' is used only for the unsolved nonterminals.
+   note: 'ext_context' is used only for the unsolved nonterminals.
 --]]
-function phrase:generate(param)
-   return self.data:generate(param)
+function phrase:generate(ext_context)
+   return self.data:generate(ext_context)
 end
 
 
