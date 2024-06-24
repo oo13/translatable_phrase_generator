@@ -119,6 +119,7 @@ function parser.parse(text)
       skip_space_nl(it)
    end
 
+   err_msg = err_msg .. syntax:fix_local_nonterminal()
    return syntax, err_msg
 end
 

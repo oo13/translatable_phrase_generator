@@ -99,6 +99,7 @@ end
    .add_anon_rule(): used by the parser.
    .set_weight(): used by the parser.
    .bind_syntax(): bind the unsolved nonterminals.
+   .fix_local_nonterminal(): fix the local nonterminals.
 
    .clone(): clone this.
 
@@ -194,6 +195,23 @@ function data.new_text()
       return err_msg
    end
 
+   text.fix_local_nonterminal = function (self, syntax)
+      local err_msg = ""
+      for i = 1, #self.kinds do
+         local key = self.parts[i]
+         if self.kinds[i] == 1 and syntax:is_local_nonterminal(key) then
+            if syntax:has_nonterminal(key) then
+               self.rules[i] = syntax:get_production_rule(key)
+               self.kinds[i] = 2
+               self.parts[i] = nil
+            else
+               err_msg = err_msg .. 'The local nonterminal "' .. key .. '" is not found.\n'
+            end
+         end
+      end
+      return err_msg
+   end
+
    text.clone = function (self)
       local new = data.new_text()
       new.weight_by_user = self.weight_by_user
@@ -229,6 +247,7 @@ end
    .add_text(): used by the parser.
    .equalize_chance(): used by the parser.
    .bind_syntax(): bind the unsolved nonterminals.
+   .fix_local_nonterminal(): fix the local nonterminals.
 
    .clone(): clone this.
 
@@ -296,6 +315,14 @@ function data.new_options()
          err_msg = err_msg .. text:bind_syntax(syntax, used_keys)
          sum = sum + text:get_weight()
          self.weights[i] = sum
+      end
+      return err_msg
+   end
+
+   options.fix_local_nonterminal = function (self, syntax)
+      local err_msg = ""
+      for _, text in ipairs(self.texts) do
+         err_msg = err_msg .. text:fix_local_nonterminal(syntax)
       end
       return err_msg
    end
@@ -375,6 +402,7 @@ end
    .set_gsubs(): used by the parser.
    .equalize_chance(): used by the parser.
    .bind_syntax(): bind the unsolved nonterminals.
+   .fix_local_nonterminal(): fix the local nonterminals.
 
    .clone(): clone this.
 
@@ -432,6 +460,14 @@ function data.new_production_rule()
       return err_msg
    end
 
+   rule.fix_local_nonterminal = function (self, syntax)
+      local err_msg = ""
+      if self.options then
+         err_msg = self.options:fix_local_nonterminal(syntax)
+      end
+      return err_msg
+   end
+
    rule.clone = function (self)
       local new = data.new_production_rule()
       new.gsubs = self.gsubs -- gsubs are harmless.
@@ -455,6 +491,7 @@ end
    Public functions:
    .generate(): generate a text.
    .has_nonterminal(): does it have the nonterminal?
+   .is_local_nonterminal(): is it a local nonterminal?
    .get_production_rule(): return the production rule.
    .get_weight(): the sum of the weight of the "main" production rule.
    .get_combination_number(): the combination number of the "main" production rule.
@@ -462,6 +499,7 @@ end
 
    .add(): used by the parser.
    .bind_syntax(): bind the unsolved nonterminals.
+   .fix_local_nonterminal(): fix the local nonterminals.
 
    .clone(): clone this.
 
@@ -484,6 +522,10 @@ function data.new_syntax ()
 
    syntax.has_nonterminal = function (self, nonterminal)
       return self.assignments[nonterminal];
+   end
+
+   syntax.is_local_nonterminal = function (_, nonterminal)
+      return string.sub(nonterminal, 1, 1) == "_"
    end
 
    syntax.get_production_rule = function (self, nonterminal)
@@ -528,6 +570,19 @@ function data.new_syntax ()
       if self.assignments["main"] then
          err_msg = self.assignments["main"]:bind_syntax(self, { main = true })
          self.binded = err_msg == ""
+      end
+      return err_msg
+   end
+
+   syntax.fix_local_nonterminal = function (self)
+      local err_msg = ""
+      for _, rule in pairs(self.assignments) do
+         err_msg = err_msg .. rule:fix_local_nonterminal(self)
+      end
+      for nonterminal, _ in pairs(self.assignments) do
+         if self:is_local_nonterminal(nonterminal) then
+            self.assignments[nonterminal] = nil
+         end
       end
       return err_msg
    end

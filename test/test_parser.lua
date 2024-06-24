@@ -368,6 +368,18 @@ function test_parser.run_test()
       return r == "nil"
    end
 
+   function tests.no_local_nonterminal_error()
+      error_is_expected = true
+      local ph = phrase.new()
+      ph:add([[
+         main = {A}
+         A = {_B}
+         B = C
+      ]])
+      local r = ph:generate()
+      return r == "nil"
+   end
+
    return ut:runner("Parser Test", tests, { verbose = false })
 end
 

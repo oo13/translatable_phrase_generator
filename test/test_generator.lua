@@ -384,6 +384,33 @@ function test_generator.run_test()
       return good1 and good2
    end
 
+   function tests.overwrite_nonterminal()
+      local sub = phrase.compile([[
+         sub = A
+      ]])
+      local main = phrase.compile([[
+         main = {sub}
+         sub = B
+      ]])
+      main:add(sub)
+      local ph = phrase.new(main)
+      return ph:generate() == "A"
+   end
+
+   function tests.dont_overwrite_local_nonterminal()
+      local sub = phrase.compile([[
+         _sub = A
+      ]])
+      local main = phrase.compile([[
+         main = {_sub}
+         _sub = B
+      ]])
+      main:add(sub)
+      local ph = phrase.new(main)
+      return ph:generate() == "B"
+   end
+
+
    return ut:runner("Generator Test", tests, { verbose = false })
 end
 
