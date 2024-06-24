@@ -84,7 +84,7 @@ end
    Private data:
    .kinds[n]: The kind in the position. 0: string, 1: expansion, 2: anonymous rule.
    .parts[n]: The part of the text, or the nonterminal.
-   .rules[n]: The production rule in the potision.
+   .rules[n]: The production rule in the position.
    .comb: The combination number of the possible expressions.
    .weight: The weight of the text as an option.
    .weight_by_user: The weight is set by user.
