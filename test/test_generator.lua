@@ -410,6 +410,26 @@ function test_generator.run_test()
       return ph:generate() == "B"
    end
 
+   function tests.sharing_local_nonterminal()
+      local common = phrase.compile([[
+         sub = {_sub2}
+         _sub2 = {sub3}
+      ]])
+      local main1 = phrase.compile([[
+         main = {sub}
+         sub3 = 1
+      ]])
+      local main2 = phrase.compile([[
+         main = {sub}
+         sub3 = 2
+      ]])
+      main1:add(common)
+      main2:add(common)
+      local ph1 = phrase.new(main1)
+      local ph2 = phrase.new(main2)
+      return ph1:generate() == "1" and ph2:generate() == "2"
+   end
+
 
    return ut:runner("Generator Test", tests, { verbose = false })
 end
