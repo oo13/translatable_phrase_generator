@@ -69,7 +69,7 @@ function phrase:add(text_or_compiled)
    elseif type(text_or_compiled) == "table" and text_or_compiled.type_compiled_syntax then
       text = nil
       err_msg = ""
-      syntax = text_or_compiled.data
+      syntax = text_or_compiled.data:clone()
    else
       phrase.output_error("Invalid parameter type.")
       return false
