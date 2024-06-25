@@ -161,7 +161,7 @@ function data.new_text()
       self.weight = w
    end
 
-   text.bind_syntax = function (self, syntax, used_keys)
+   text.bind_syntax = function (self, syntax, epoch)
       local err_msg = ""
       self.comb = 1
       local weight = 1
@@ -169,18 +169,18 @@ function data.new_text()
          local rule = nil
          if self.kinds[i] == 2 then
             rule = self.rules[i]
-            err_msg = err_msg .. rule:bind_syntax(syntax, used_keys)
+            err_msg = err_msg .. rule:bind_syntax(syntax, epoch)
          elseif self.kinds[i] == 1 then
             local key = self.parts[i]
-            if syntax:has_nonterminal(key) then
-               if used_keys[key] then
-                  err_msg = err_msg .. 'Recursive expansion of "' .. key .. '" is detected.\n'
-               else
-                  rule = syntax:get_production_rule(key)
-                  used_keys[key] = true
-                  err_msg = err_msg .. rule:bind_syntax(syntax, used_keys)
-                  used_keys[key] = nil
+            rule = syntax:get_production_rule(key)
+            if rule then
+               local retval = rule:bind_syntax(syntax, epoch)
+               if retval then
                   self.rules[i] = rule
+                  err_msg = err_msg .. retval
+               else
+                  rule = nil
+                  err_msg = err_msg .. 'Recursive expansion of "' .. key .. '" is detected.\n'
                end
             end
          end
@@ -200,8 +200,9 @@ function data.new_text()
       for i = 1, #self.kinds do
          local key = self.parts[i]
          if self.kinds[i] == 1 and syntax:is_local_nonterminal(key) then
-            if syntax:has_nonterminal(key) then
-               self.rules[i] = syntax:get_production_rule(key)
+            local rule = syntax:get_production_rule(key)
+            if rule then
+               self.rules[i] = rule
                self.kinds[i] = 2
                self.parts[i] = nil
             else
@@ -309,11 +310,11 @@ function data.new_options()
       end
    end
 
-   options.bind_syntax = function (self, syntax, used_keys)
+   options.bind_syntax = function (self, syntax, epoch)
       local sum = 0
       local err_msg = ""
       for i, text in ipairs(self.texts) do
-         err_msg = err_msg .. text:bind_syntax(syntax, used_keys)
+         err_msg = err_msg .. text:bind_syntax(syntax, epoch)
          sum = sum + text:get_weight()
          self.weights[i] = sum
       end
@@ -393,6 +394,7 @@ end
    Private data:
    .options: options in the production rule.
    .gsubs: gsubs in the production rule.
+   .binding_epoch: Binding epoch.
 
    Public functions:
    .generate(): generate a text.
@@ -412,6 +414,7 @@ end
 --]]
 function data.new_production_rule()
    local rule = {}
+   rule.binding_epoch = 0
    rule.type_production_rule = true
 
    rule.generate = function (self, ext_context)
@@ -453,11 +456,21 @@ function data.new_production_rule()
       self.options:equalize_chance(enable)
    end
 
-   rule.bind_syntax = function (self, syntax, used_keys)
-      local err_msg = ""
-      if self.options then
-         err_msg = self.options:bind_syntax(syntax, used_keys)
+   rule.bind_syntax = function (self, syntax, epoch)
+      if self.binding_epoch < 0 then
+         -- Recursion.
+         return nil
+      elseif self.binding_epoch == epoch then
+         -- Already bound.
+         return ""
       end
+
+      local err_msg = ""
+      self.binding_epoch = -1
+      if self.options then
+         err_msg = self.options:bind_syntax(syntax, epoch)
+      end
+      self.binding_epoch = epoch
       return err_msg
    end
 
@@ -488,10 +501,10 @@ end
    Private data:
    .assignments: key: nonterminal, value: production_rule
    .binded: already executed bind_syntax().
+   .binding_epoch: Binding epoch.
 
    Public functions:
    .generate(): generate a text.
-   .has_nonterminal(): does it have the nonterminal?
    .is_local_nonterminal(): is it a local nonterminal?
    .get_production_rule(): return the production rule.
    .get_weight(): the sum of the weight of the "main" production rule.
@@ -511,6 +524,7 @@ function data.new_syntax ()
    local syntax = {}
    syntax.assignments = {}
    syntax.binded = false
+   syntax.binding_epoch = 0
    syntax.type_syntax = true
 
    syntax.generate = function (self, ext_context)
@@ -519,10 +533,6 @@ function data.new_syntax ()
       else
          return "nil"
       end
-   end
-
-   syntax.has_nonterminal = function (self, nonterminal)
-      return self.assignments[nonterminal];
    end
 
    syntax.is_local_nonterminal = function (_, nonterminal)
@@ -568,8 +578,13 @@ function data.new_syntax ()
 
    syntax.bind_syntax = function (self)
       local err_msg = ""
+      self.binding_epoch = self.binding_epoch + 1
+      -- The three variation (initial, current, not current) is enough to distinguish the binding epoch even if you call an internal data method directly. (The functions in phrase.lua ensure not to call bind_syntax to the syntax that already bound.)
+      if self.binding_epoch > 2 then
+          self.binding_epoch = 1
+      end
       if self.assignments["main"] then
-         err_msg = self.assignments["main"]:bind_syntax(self, { main = true })
+         err_msg = self.assignments["main"]:bind_syntax(self, self.binding_epoch)
          self.binded = err_msg == ""
       end
       return err_msg
