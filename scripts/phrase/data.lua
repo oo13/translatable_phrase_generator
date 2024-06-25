@@ -214,6 +214,7 @@ function data.new_text()
 
    text.clone = function (self)
       local new = data.new_text()
+      new.weight = self.weight
       new.weight_by_user = self.weight_by_user
 
       for i = 1, #self.kinds do
