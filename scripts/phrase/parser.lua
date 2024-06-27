@@ -451,7 +451,7 @@ end
           text_begin, [ text_body, [ text_postfix ] ] |
           ... ;
    text_body = { ? [^\n|~{}] ? | expansion } ;
-   text_postfix = space_opt, ( $ | '\n' | '|' | '~' | '}' ) ; (* This space_opt is greedy match. It isn't a part of the text. *)
+   text_postfix = ? space_opt(?=($|[\n|~}])) ? ; (* text_postfix greedily matches with space_opt preceding the end of the text, newline, "|", "~", or "}", but it consumes only space_opt. *)
 --]]
 function parse_non_quoted_text(it)
    -- The caller ensures it:getc() == text_begin or EOT.
