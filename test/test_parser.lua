@@ -91,7 +91,7 @@ function test_parser.run_test()
       return r == "Hello World."
    end
 
-   function tests.assingments_top_down()
+   function tests.assignments_top_down()
       local ph = phrase.new()
       ph:add([[
          main = {sub}
@@ -101,7 +101,7 @@ function test_parser.run_test()
       return r == "A"
    end
 
-   function tests.assingments_bottom_up()
+   function tests.assignments_bottom_up()
       local ph = phrase.new()
       ph:add([[
          sub = A

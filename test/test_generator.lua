@@ -77,14 +77,14 @@ function test_generator.run_test()
 
    local tests = {}
 
-   function tests.no_optinos()
+   function tests.no_options()
       local ph = phrase.new([[
          main = ""
       ]])
       return ph:generate() == ""
    end
 
-   function tests.no_weight_optinos()
+   function tests.no_weight_options()
       local ph = phrase.new([[
          main = A | B | C
       ]])
@@ -98,7 +98,7 @@ function test_generator.run_test()
          r3 == "C"
    end
 
-   function tests.weighted_optinos()
+   function tests.weighted_options()
       local ph = phrase.new([[
          main = A | "B" 2 | "C" 3
       ]])
@@ -118,7 +118,7 @@ function test_generator.run_test()
          r6 == "C"
    end
 
-   function tests.weighted_and_equalized_optinos()
+   function tests.weighted_and_equalized_options()
       local ph = phrase.new([[
          main := A | "B" 2 | "C" 3
       ]])
@@ -138,7 +138,7 @@ function test_generator.run_test()
          r6 == "C"
    end
 
-   function tests.optinos_distribution()
+   function tests.options_distribution()
       local ph = phrase.new([[
          main = {A1} | {A2}
          A1 = 0 | 1 | 2
@@ -162,7 +162,7 @@ function test_generator.run_test()
       return check_distribution(ph, ph.generate, 100000, dist, 0.01)
    end
 
-   function tests.optinos_distribution_equalized()
+   function tests.options_distribution_equalized()
       local ph = phrase.new([[
          main = {A1} | {A2}
          A1 = 0 | 1 | 2
@@ -186,7 +186,7 @@ function test_generator.run_test()
       return check_distribution(ph, ph.generate, 100000, dist, 0.01)
    end
 
-   function tests.optinos_distribution_weighted()
+   function tests.options_distribution_weighted()
       local ph = phrase.new([[
          main = text1 | {B}
          B = text2 | "{C}" 2
@@ -203,7 +203,7 @@ function test_generator.run_test()
       return check_distribution(ph, ph.generate, 100000, dist, 0.01)
    end
 
-   function tests.optinos_distribution_binary_search()
+   function tests.options_distribution_binary_search()
       -- The binary search is used if the number of the options is more than 31.
       local ph = phrase.new([[
          main =
