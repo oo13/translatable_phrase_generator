@@ -78,6 +78,16 @@ function test_functions.run_test()
          ph:generate() == "A"
    end
 
+   function tests.new_with_a_start_condition()
+      local ph = phrase.new([[start = A]], 'start')
+      return
+         ph.type_phrase and
+         ph:get_number_of_syntax() == 1 and
+         ph:get_combination_number() == 1 and
+         ph:get_weight() == 1 and
+         ph:generate() == "A"
+   end
+
    function tests.new_with_a_compiled_data()
       local compiled = phrase.compile([[main = A]])
       local ph = phrase.new(compiled)
@@ -215,6 +225,18 @@ function test_functions.run_test()
          ph:get_combination_number() == 1 and
          ph:get_weight() == 1 and
          ph:generate() == "1"
+   end
+
+   function tests.phrase_add_with_start_condition()
+      ut:set_random_sequence({ 0.9 })
+      local ph = phrase.new([[main = 1]])
+      local result = ph:add([[sub = 2]], 'sub')
+      return
+         result and
+         ph:get_number_of_syntax() == 2 and
+         ph:get_combination_number() == 2 and
+         ph:get_weight() == 2 and
+         ph:generate() == "2"
    end
 
    function tests.compile_add_1()

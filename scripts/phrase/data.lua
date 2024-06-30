@@ -500,15 +500,16 @@ end
 
    Private data:
    .assignments: key: nonterminal, value: production_rule
-   .binded: already executed bind_syntax().
+   .start_rule: The production rule assigned to the start condition.
+   .is_bound: already executed bind_syntax().
    .binding_epoch: Binding epoch.
 
    Public functions:
    .generate(): generate a text.
    .is_local_nonterminal(): is it a local nonterminal?
    .get_production_rule(): return the production rule.
-   .get_weight(): the sum of the weight of the "main" production rule.
-   .get_combination_number(): the combination number of the "main" production rule.
+   .get_weight(): the sum of the weight of the production rule assigned to the start condition.
+   .get_combination_number(): the combination number of the production rule assigned to the start condition.
    .is_valid(): Is this a valid syntax?
 
    .add(): used by the parser.
@@ -523,13 +524,14 @@ end
 function data.new_syntax ()
    local syntax = {}
    syntax.assignments = {}
-   syntax.binded = false
+   syntax.start_rule = nil
+   syntax.is_bound = false
    syntax.binding_epoch = 0
    syntax.type_syntax = true
 
    syntax.generate = function (self, ext_context)
       if self:is_valid() then
-         return self.assignments["main"]:generate(ext_context)
+         return self.start_rule:generate(ext_context)
       else
          return "nil"
       end
@@ -545,7 +547,7 @@ function data.new_syntax ()
 
    syntax.get_weight = function (self)
       if self:is_valid() then
-         return self.assignments["main"]:get_weight()
+         return self.start_rule:get_weight()
       else
          return 0
       end
@@ -553,7 +555,7 @@ function data.new_syntax ()
 
    syntax.get_combination_number = function (self)
       if self:is_valid() then
-         return self.assignments["main"]:get_combination_number()
+         return self.start_rule:get_combination_number()
       else
          return 0
       end
@@ -569,24 +571,35 @@ function data.new_syntax ()
             self.assignments[n] = p
          end
       end
-      self.binded = false
+      self.is_bound = false
    end
 
    syntax.is_valid = function (self)
-      return self.binded and self.assignments["main"]
+      return self.is_bound
    end
 
-   syntax.bind_syntax = function (self)
-      local err_msg = ""
+   syntax.bind_syntax = function (self, start_condition)
+      local rule = self.assignments[start_condition]
+      if not rule then
+         self.is_bound = false
+         self.start_rule = nil
+         return 'The nonterminal "' .. start_condition .. '" doesn\'t exist.\n'
+      end
+
       self.binding_epoch = self.binding_epoch + 1
-      -- The three variation (initial, current, not current) is enough to distinguish the binding epoch even if you call an internal data method directly. (The functions in phrase.lua ensure not to call bind_syntax to the syntax that already bound.)
-      if self.binding_epoch > 2 then
+      -- It's generally 0 or 1 because the functions in phrase.lua don't call bind_syntax() that already bound. (The three variation (initial, current, not current) is enough to distinguish the binding epoch unless start_condition is changed.)
+      if self.binding_epoch > 1000000000 then
           self.binding_epoch = 1
+
+          if self.start_rule ~= rule then
+             -- Reset the epoch
+             rule:bind_syntax(self, self.binding_epoch)
+             self.binding_epoch = 2
+          end
       end
-      if self.assignments["main"] then
-         err_msg = self.assignments["main"]:bind_syntax(self, self.binding_epoch)
-         self.binded = err_msg == ""
-      end
+      self.start_rule = rule
+      local err_msg = self.start_rule:bind_syntax(self, self.binding_epoch)
+      self.is_bound = err_msg == ""
       return err_msg
    end
 

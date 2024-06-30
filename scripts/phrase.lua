@@ -31,6 +31,7 @@ local check_encoding_consistency
    Create an instance of the phrase generator.
 
    param: text_or_compiled  A text or a compiled data of the phrase syntax, or nil to request the empty instance.
+          start_condition  A string that has the name of the nonterminal where is the start condition, or nil that means "main".
 
    return: The phrase generator if no errors are detected.
            An empty phrase generator if non fatal errors are detected.
@@ -38,7 +39,7 @@ local check_encoding_consistency
 
    note: output_error() and output_compile_error() is called if some errors are detected.
 --]]
-function phrase.new(text_or_compiled)
+function phrase.new(text_or_compiled, start_condition)
    if not check_encoding_consistency() then
       return nil
    end
@@ -47,7 +48,7 @@ function phrase.new(text_or_compiled)
    instance.data = phrase_data.new_phrase_data()
    instance.type_phrase = true
    if text_or_compiled then
-      instance:add(text_or_compiled)
+      instance:add(text_or_compiled, start_condition)
    end
    return instance
 end
@@ -56,12 +57,13 @@ end
    Add a phrase syntax into the instance.
 
    param: text_or_compiled  A text or a compiled data of the phrase syntax.
+          start_condition  A string that has the name of the nonterminal where is the start condition, or nil that means "main".
 
    return: false if the phrase syntax fail to add into the phrase generator due to some errors.
 
    note: output_error() and output_compile_error() is if when some errors are detected.
 --]]
-function phrase:add(text_or_compiled)
+function phrase:add(text_or_compiled, start_condition)
    local text, syntax, err_msg
    if type(text_or_compiled) == "string" then
       text = text_or_compiled
@@ -75,9 +77,12 @@ function phrase:add(text_or_compiled)
       return false
    end
    if err_msg == "" then
-      err_msg = syntax:bind_syntax()
+      if start_condition == nil then
+         start_condition = "main"
+      end
+      err_msg = syntax:bind_syntax(start_condition)
       if err_msg == "" and not self.data:add(syntax) then
-         err_msg = 'The nonterminal "main" doesn\'t exist.\n'
+         err_msg = "Fail to add the syntax.\n"
       end
    end
    if err_msg ~= "" then
@@ -110,7 +115,6 @@ local compiled_syntax_add
    return: The compiled data if no errors are detected.
            nil if some errors are detected.
 
-   note: "text" doesn't need to have the assignment for 'main'.
    note: output_error() and output_compile_error() is if when some errors are detected.
 --]]
 function phrase.compile(text)
@@ -142,7 +146,6 @@ end
 
    return: false if the phrase syntax fail to add into the instance due to some errors.
 
-   note: "text_or_compiled" doesn't need to have the assignment for 'main'.
    note: output_error() and output_compile_error() is if when some errors are detected.
    note: The production rules for the existing nonterminals is overwritten if "text_or_compiled" has the assignment for the same nonterminal.
 --]]

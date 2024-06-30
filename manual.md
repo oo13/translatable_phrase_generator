@@ -134,7 +134,7 @@ It can use to create a common library with some assignments, but the number of t
 ## Overview
 The phrase syntax consists of assignments. The order of the assignments doesn't affect the generated text. The recursive reference is not allowed.
 
-It needs a definition of the nonterminal "main" as the start condition to generate the phrase.
+It needs a definition of the nonterminal where is the start condition to generate the phrase. It's "main" by default.
 
 ## Spaces
 The spaces can consist of U+0020 SPACE, U+0009 TAB, and the comment blocks "{* ... }".
@@ -268,12 +268,13 @@ integer = { ? [0-9] ? } ;
 
 # Phrase functions
 ## Public functions in the module "phrase"
-### new(text_or_compiled)
+### new(text_or_compiled, start_condition)
 
 It creates an instance of the phrase generator.
 
 Parameter:
 - "text_or_compiled" is a text or a compiled data of the phrase syntax, or nil to request the empty instance.
+- "start_condition" is a string that has the name of the nonterminal where is the start condition, or nil that means "main".
 
 Return:
 - The instance of the phrase generator if no errors are detected.
@@ -283,7 +284,7 @@ Return:
 Errors:
 - The fatal error is detected if you require UTF-8 support (default) but it doesn't exist.
 - Some parse errors.
-- A compile error when the nonterminal "main" doesn't exist.
+- A compile error when the start condition doesn't exist.
 
 Note:
 - output_error() and output_compile_error() is called if some errors are detected.
@@ -305,7 +306,6 @@ Errors:
 - Some parse errors.
 
 Note:
-- "text" doesn't need to have the assignment for 'main'.
 - output_error() and output_compile_error() is called if when some errors are detected.
 
 ### set_random_function(f)
@@ -357,12 +357,13 @@ Note:
 - This function uses output_error() to output.
 
 ## Instance methods of the phrase generator
-### add(self, text_or_compiled)
+### add(self, text_or_compiled, start_condition)
 
 It adds a phrase syntax into the instance.
 
 Parameter:
 - "text_or_compiled" is a text or a compiled data of the phrase syntax.
+- "start_condition" is a string that has the name of the nonterminal where is the start condition, or nil that means "main".
 
 Return:
 - false if the phrase syntax fail to add into the instance due to some errors.
@@ -370,7 +371,7 @@ Return:
 Errors:
 - Invalid parameter error if the parameter is neither a string or a compiled data.
 - Some parse errors.
-- A compile error when the nonterminal "main" doesn't exist.
+- A compile error when the start condition doesn't exist.
 
 Note:
 - output_error() and output_compile_error() is called if some errors are detected.
@@ -434,7 +435,6 @@ Errors:
 - Some parse errors.
 
 Note:
-- "text_or_compiled" doesn't need to have the assignment for 'main'.
 - output_error() and output_compile_error() is called if when some errors are detected.
 - The production rules for the existing nonterminals is overwritten if "text_or_compiled" has the assignment for the same nonterminal.
 - compile() is called if "text_or_compiled" is a string.
