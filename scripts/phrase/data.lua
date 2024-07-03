@@ -406,6 +406,7 @@ end
    .equalize_chance(): used by the parser.
    .bind_syntax(): bind the unsolved nonterminals.
    .fix_local_nonterminal(): fix the local nonterminals.
+   .reset_binding_epoch(): Reset the binding epoch.
 
    .clone(): clone this.
 
@@ -480,6 +481,10 @@ function data.new_production_rule()
          err_msg = self.options:fix_local_nonterminal(syntax)
       end
       return err_msg
+   end
+
+   rule.reset_binding_epoch = function (self)
+      self.binding_epoch = 0
    end
 
    rule.clone = function (self)
@@ -589,13 +594,11 @@ function data.new_syntax ()
       self.binding_epoch = self.binding_epoch + 1
       -- It's generally 0 or 1 because the functions in phrase.lua don't call bind_syntax() that already bound. (The three variation (initial, current, not current) is enough to distinguish the binding epoch unless start_condition is changed.)
       if self.binding_epoch > 1000000000 then
-          self.binding_epoch = 1
-
-          if self.start_rule ~= rule then
-             -- Reset the epoch
-             rule:bind_syntax(self, self.binding_epoch)
-             self.binding_epoch = 2
+          -- Reset the epoch
+          for _, r in pairs(self.assignments) do
+             r:reset_binding_epoch()
           end
+          self.binding_epoch = 1
       end
       self.start_rule = rule
       local err_msg = self.start_rule:bind_syntax(self, self.binding_epoch)
