@@ -851,9 +851,6 @@ local function add_generic()
     SUB_B1 = {PLURAL_NOUNS} | {NOUNS_OF_INDETERMINATE_QUANTITY}
    ]]))
 
-
-   local pilotname_generic = static_phrase_generator.get("pilotname_generic")
-
    -- The weight of "main" is to normalize to 1.
    generic_syntax:add(_([[
     main = "{_MAIN}" 1
@@ -872,6 +869,7 @@ local function add_generic()
      {MAIN_B}
    ]]))
 
+   local pilotname_generic = static_phrase_generator.get("pilotname_generic")
    pilotname_generic:add(generic_syntax)
 end
 
@@ -1339,8 +1337,6 @@ local function add_pirate()
      fiend
    ]]))
 
-   local pilotname_pirate = static_phrase_generator.get("pilotname_pirate")
-
    -- The weight of "main" is to normalize to 1.
    pirate_syntax:add(_([[
     main = "{_PIRATE}" 1
@@ -1353,6 +1349,7 @@ local function add_pirate()
      {PIRATE_5}
    ]]))
 
+   local pilotname_pirate = static_phrase_generator.get("pilotname_pirate")
    pilotname_pirate:add(pirate_syntax)
 end
 

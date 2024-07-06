@@ -1,6 +1,6 @@
 # Translatable phrase generator for Lua, or Endless names plugin for Naev
 
-This Lua module is one of the translatable phrase generators. See [the manual](manual.md) for details. The module consists of ["scripts/phrase.lua"](scripts/phrase.lua), ["scripts/phrase/data.lua"](scripts/phrase/data.lua), and ["scripts/phrase/parser.lua"](scripts/phrase/parser.lua). Endless names plugin for Naev is a simple example of use. The user codes are ["scripts/pilotname/*.lua"](scripts/pilotname/), and the Japanese translation is ["po/ja.po"](po/ja.po).
+This Lua module is one of the translatable phrase generators. See [the manual](manual.md) for details. The module consists of ["scripts/phrase.lua"](scripts/phrase.lua), ["scripts/phrase/data.lua"](scripts/phrase/data.lua), and ["scripts/phrase/parser.lua"](scripts/phrase/parser.lua). Endless names plugin for Naev is a simple example of use. The user codes are ["events/*"](events/) and ["scripts/*"](scripts/), and the Japanese translation is ["po/ja.po"](po/ja.po).
 
 [C++ version is here.](https://github.com/oo13/tphrase)
 
