@@ -1,3 +1,7 @@
 plugin.xml
+events/pilotname.lua
+events/pilotname/endless_names.lua
+events/pilotname/generic.lua
+events/pilotname/pirate.lua
 scripts/pilotname/generic.lua
 scripts/pilotname/pirate.lua

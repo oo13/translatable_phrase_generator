@@ -7,30 +7,45 @@ Files: *
 Copyright: © 2024 OOTA, Masato
 License: GPL-3.0-or-later
 
-Files: scripts/pilotname/generic.lua
+Files: events/pilotname.lua
 Copyright:
  Copyright © 2024 OOTA, Masato
- Copyright © 2021 bobbens@github
+ Copyright © 2022, 2023 bobbens@github
+License: GPL-3.0-or-later
+Comment:
+ This file derive from "dat/events/news.lua" in Naev.
+
+Files: events/pilotname/endless_names.lua
+Copyright:
+ Copyright © 2024 OOTA, Masato
  Copyright (c) 2014 by Michael Zahniser
  Copyright (c) 2015 lehgogh@github
  Copyright (c) 2015-2017 Pointedstick@github
+ Copyright (c) 2015 eflyon@github
+ Copyright (c) 2015 akien-mga@github
 License: GPL-3.0-or-later
 Comment:
- This file derives from "dat/scripts/pilotname/generic.lua" in Naev.
  The definitions of the Endless names derive from "data/names.txt" in Endless Sky 0.9.8.
 
-Files: scripts/pilotname/pirate.lua
+Files:
+ events/pilotname/generic.lua
+ scripts/pilotname/generic.lua
 Copyright:
  Copyright © 2024 OOTA, Masato
  Copyright © 2021 bobbens@github
- Copyright (c) 2014 by Michael Zahniser
- Copyright (c) 2015 eflyon@github
- Copyright (c) 2015 akien-mga@github
- Copyright (c) 2015-2017 Pointedstick@github
 License: GPL-3.0-or-later
 Comment:
- This file derive from "dat/scripts/pilotname/pirate.lua" in Naev.
- The definitions of the Endless names derive from "data/names.txt" in Endless Sky 0.9.8.
+ This file derives from "dat/scripts/pilotname/generic.lua" in Naev.
+
+Files:
+ events/pilotname/pirate.lua
+ scripts/pilotname/pirate.lua
+Copyright:
+ Copyright © 2024 OOTA, Masato
+ Copyright © 2021 bobbens@github
+License: GPL-3.0-or-later
+Comment:
+ This file derives from "dat/scripts/pilotname/pirate.lua" in Naev.
 
 Files:
  po/*.pot
@@ -45,7 +60,7 @@ Copyright:
  Copyright (c) 2015 akien-mga@github
  Copyright (c) 2015-2017 Pointedstick@github
 License: GPL-3.0-or-later
-Comment: This file derives from scripts/pilotname/*.lua
+Comment: This file derives from {events,scripts}/pilotname/*.lua
 
 Files: po/its/translation.its
 Copyright: © 2017, 2020, 2021 bobbens and UncombedCoconut

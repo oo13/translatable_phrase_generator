@@ -1,4 +1,11 @@
 --[[
+<?xml version='1.0' encoding='utf8'?>
+<event name="Configure pilot names">
+ <location>load</location>
+ <chance>100</chance>
+</event>
+--]]
+--[[
    Endless names plugin for Naev.
 --]]
 --[[
@@ -17,18 +24,21 @@ along with this plugin.  If not, see <http://www.gnu.org/licenses/>.
 
 Copyright © 2024 OOTA, Masato
 
-This file derive from "dat/scripts/pilotname/pirate.lua" in Naev.
-Copyright © 2021 bobbens@github
+This file derive from "dat/events/news.lua" in Naev.
+Copyright © 2022, 2023 bobbens@github
 --]]
 
+local lf = require "love.filesystem"
 local static_phrase_generator = require "static_phrase_generator"
 
---[[
--- @brief Generates pirate names
---]]
-local function pirate ()
-   local pilotname_pirate = static_phrase_generator.get("pilotname_pirate")
-   return pilotname_pirate:generate()
-end
+function create ()
+   -- Reset the pilotname
+   static_phrase_generator.reset()
 
-return pirate
+   -- Check the subdirectory "events/pilotname" as it's the Naev manner.
+   for k, v in ipairs(lf.getDirectoryItems("events/pilotname")) do
+      require("events.pilotname." .. string.gsub(v, ".lua", ""))()
+   end
+
+   -- You can add a phrase syntax into the static phrase generator at any time.
+end
