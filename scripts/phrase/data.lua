@@ -580,7 +580,8 @@ function data.new_syntax ()
       local err_msg = ""
       if production_rule ~= nil then
          if self.assignments[nonterminal_or_syntax] then
-            err_msg = 'The nonterminal "' .. nonterminal_or_syntax .. '" is already defined.\n'
+            -- This is a compile error, so it needs no newline.
+            err_msg = 'The nonterminal "' .. nonterminal_or_syntax .. '" is already defined.'
          else
             self.assignments[nonterminal_or_syntax] = production_rule
          end

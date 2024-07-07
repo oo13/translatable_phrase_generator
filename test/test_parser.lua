@@ -418,7 +418,7 @@ function test_parser.run_test()
       ]])
       local r = ph:generate()
       return r == "nil" and
-         string.find(error_messages, 'The nonterminal "A" is already defined.', 1, true)
+         string.find(error_messages, 'The nonterminal "A" is already defined.\n', 1, true)
    end
 
    return ut:runner("Parser Test", tests, { verbose = false })
