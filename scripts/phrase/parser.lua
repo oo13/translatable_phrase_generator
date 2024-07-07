@@ -260,19 +260,24 @@ end
 
 
 -- forward declarations
-local parse_nonterminal, parse_operator, parse_production_rule
+local parse_nonterminal, parse_weight, parse_operator, parse_production_rule
 
 --[[
    Parse an assignment.
 
-   assignment = nonterminal, space_opt, operator, space_one_nl_opt, production_rule, ( nl | $ ) ;
+   assignment = nonterminal, space_opt, [ weight, space_opt ], operator, space_one_nl_opt, production_rule, ( nl | $ ) ; (* One of spaces before weight is necessary because nonterminal consumes the numeric character and the period. *)
 --]]
 function parse_assignment(it, syntax)
    local nonterminal = parse_nonterminal(it)
    skip_space(it)
+   local weight = parse_weight(it)
+   skip_space(it)
    local op_type = parse_operator(it)
    skip_space_one_nl(it)
    local rule = parse_production_rule(it)
+   if weight then
+      rule:set_weight(weight)
+   end
    if it:eot() or it:getc() == "\n" then
       if op_type == ":" then
          rule:equalize_chance(true)
@@ -284,16 +289,26 @@ function parse_assignment(it, syntax)
 end
 
 
+-- Is the current position a nonterminal character?
+local function is_nonterminal_char(c)
+   if c and string.find(c, "[A-Za-z0-9_.]") then
+      return true
+   else
+      return false
+   end
+end
+
+
 --[[
    Parse a nonterminal.
 
-   nonterminal = { ? [A-Za-z0-9_] ? } ;
+   nonterminal = { ? [A-Za-z0-9_.] ? } ;
 --]]
 function parse_nonterminal(it)
    local nonterminal = ""
    while true do
       local c = it:getc()
-      if c and string.find(c, "[A-Za-z0-9_]") then
+      if is_nonterminal_char(c) then
          nonterminal = nonterminal .. c
          it:next()
       else
@@ -301,7 +316,7 @@ function parse_nonterminal(it)
       end
    end
    if nonterminal == "" then
-      throw_parse_error(it, 'A nonterminal "/[A-Za-z0-9_]+/" is expected.')
+      throw_parse_error(it, 'A nonterminal "/[A-Za-z0-9_.]+/" is expected.')
    end
    return nonterminal
 end
@@ -329,6 +344,57 @@ function parse_operator(it)
    else
       throw_parse_error(it, '"=" or ":=" is expected.')
    end
+end
+
+
+-- Is the current position a decimal number character?
+local function is_decimal_number_char(c)
+   if c and string.find("0123456789", c, 1, true) then
+      return true
+   else
+      return false
+   end
+end
+
+
+--[[
+   Parse a weight
+
+   weight = ( ( { ? [0-9] ? }, [ "." ] ) | ( ".", ? [0-9] ? ) ), [ { ? [0-9] ? } ] ;
+--]]
+function parse_weight(it)
+   local s = ""
+   local c = it:getc()
+   if c == "." then
+      it:next()
+      c = it:getc()
+      if is_decimal_number_char(c) then
+         s = "." .. c
+         it:next()
+         c = it:getc()
+      else
+         throw_parse_error(it, 'A number is expected. ("." is not a number.)')
+      end
+   elseif is_decimal_number_char(c) then
+      repeat
+         s = s .. c
+         it:next()
+         c = it:getc()
+      until not is_decimal_number_char(c)
+      if c == "." then
+         s = s .. c
+         it:next()
+         c = it:getc()
+      end
+   else
+      return nil
+   end
+   while is_decimal_number_char(c) do
+      s = s .. c
+      it:next()
+      c = it:getc()
+   end
+   return tonumber(s)
 end
 
 
@@ -407,16 +473,13 @@ function parse_text(it)
 end
 
 
--- forward declaration
-local parse_number
-
 --[[
    Parse a quoted text.
 
    text = ...
-          '"', [ { ? [^"{] ? | expansion } ], '"', space_opt, [ number ] |
-          "'", [ { ? [^'{] ? | expansion } ], "'", space_opt, [ number ] |
-          "`", [ { ? [^`{] ? | expansion } ], "`", space_opt, [ number ] ;
+          '"', [ { ? [^"{] ? | expansion } ], '"', space_opt, [ weight ] |
+          "'", [ { ? [^'{] ? | expansion } ], "'", space_opt, [ weight ] |
+          "`", [ { ? [^`{] ? | expansion } ], "`", space_opt, [ weight ] ;
 --]]
 function parse_quoted_text(it)
    local text = data.new_text()
@@ -439,7 +502,7 @@ function parse_quoted_text(it)
    end
    it:next()
    skip_space(it)
-   text:set_weight(parse_number(it))
+   text:set_weight(parse_weight(it))
    return text
 end
 
@@ -554,7 +617,7 @@ function parse_expansion(it, text, pre_s)
                return pre_s .. name
             end
          else
-            is_nonterminal = is_nonterminal and string.find(c, "[A-Za-z0-9_]")
+            is_nonterminal = is_nonterminal and is_nonterminal_char(c)
             if not is_comment then
                name = name .. c
             end
@@ -562,57 +625,6 @@ function parse_expansion(it, text, pre_s)
       end
    end
    throw_parse_error(it, "The end of the brace expansion is expected.")
-end
-
-
--- Is the current position a decimal number character?
-local function is_decimal_number_char(c)
-   if c and string.find("0123456789", c, 1, true) then
-      return true
-   else
-      return false
-   end
-end
-
-
---[[
-   Parse a number.
-
-   number = ( ( { ? [0-9] ? }, [ "." ] ) | ( ".", ? [0-9] ? ) ), [ { ? [0-9] ? } ] ;
---]]
-function parse_number(it)
-   local s = ""
-   local c = it:getc()
-   if c == "." then
-      it:next()
-      c = it:getc()
-      if is_decimal_number_char(c) then
-         s = "." .. c
-         it:next()
-         c = it:getc()
-      else
-         throw_parse_error(it, 'A number is expected. ("." is not a number.)')
-      end
-   elseif is_decimal_number_char(c) then
-      repeat
-         s = s .. c
-         it:next()
-         c = it:getc()
-      until not is_decimal_number_char(c)
-      if c == "." then
-         s = s .. c
-         it:next()
-         c = it:getc()
-      end
-   else
-      return nil
-   end
-   while is_decimal_number_char(c) do
-      s = s .. c
-      it:next()
-      c = it:getc()
-   end
-   return tonumber(s)
 end
 
 

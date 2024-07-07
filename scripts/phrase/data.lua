@@ -395,6 +395,7 @@ end
    .options: options in the production rule.
    .gsubs: gsubs in the production rule.
    .binding_epoch: Binding epoch.
+   .weight: The user defined weight.
 
    Public functions:
    .generate(): generate a text.
@@ -403,6 +404,7 @@ end
 
    .set_options(): used by the parser.
    .set_gsubs(): used by the parser.
+   .set_weight(): used by the parser.
    .equalize_chance(): used by the parser.
    .bind_syntax(): bind the unsolved nonterminals.
    .fix_local_nonterminal(): fix the local nonterminals.
@@ -417,6 +419,7 @@ function data.new_production_rule()
    local rule = {}
    rule.binding_epoch = 0
    rule.type_production_rule = true
+   rule.weight = nil
 
    rule.generate = function (self, ext_context)
       local s = ""
@@ -430,7 +433,9 @@ function data.new_production_rule()
    end
 
    rule.get_weight = function (self)
-      if self.options then
+      if self.weight then
+         return self.weight
+      elseif self.options then
          return self.options:get_weight()
       else
          return 0
@@ -451,6 +456,10 @@ function data.new_production_rule()
 
    rule.set_gsubs = function (self, gsubs)
       self.gsubs = gsubs
+   end
+
+   rule.set_weight = function (self, weight)
+      self.weight = weight
    end
 
    rule.equalize_chance = function (self, enable)
@@ -493,6 +502,7 @@ function data.new_production_rule()
       if self.options then
          new.options = self.options:clone()
       end
+      new.weight = self.weight
       return new
    end
 

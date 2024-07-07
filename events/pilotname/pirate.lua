@@ -531,14 +531,12 @@ return function ()
      Youma |
      Zombie
 
-    PIRATE =
+    main 1 =
      {ARTICLE} {ACTOR} |
      {COLOUR} {ACTOR} |
      {DESCRIPTOR} {ACTOR} |
      {ARTICLE} {DESCRIPTOR} {ACTOR} |
      {ARTICLE} {COLOUR} {ACTOR} |
      {ARTICLE} {DESCRIPTOR} {COLOUR} {ACTOR}
-
-    main = "{PIRATE}" 1
    ]]))
 end

@@ -380,6 +380,34 @@ function test_parser.run_test()
       return r == "nil"
    end
 
+   function tests.nonterminal_with_weight_1()
+      local ph = phrase.new()
+      ph:add([[
+         main 10 = A | B | C
+      ]])
+      local r = ph:generate()
+      return r == "A" and ph:get_weight() == 10
+   end
+
+   function tests.nonterminal_with_weight_2()
+      local ph = phrase.new()
+      ph:add([[
+         main 10.5= A | B | C
+      ]])
+      local r = ph:generate()
+      return r == "A" and ph:get_weight() == 10.5
+   end
+
+   function tests.nonterminal_characters()
+      local ph = phrase.new()
+      ph:add([[
+         main = {0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.}
+         0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_. = 9
+      ]])
+      local r = ph:generate()
+      return r == "9"
+   end
+
    return ut:runner("Parser Test", tests, { verbose = false })
 end
 

@@ -853,8 +853,7 @@ local function add_generic()
 
    -- The weight of "main" is to normalize to 1.
    generic_syntax:add(_([[
-    main = "{_MAIN}" 1
-    _MAIN =
+    main 1 =
      {MAIN_0} |
      {MAIN_1} |
      {MAIN_2} |
@@ -1339,8 +1338,7 @@ local function add_pirate()
 
    -- The weight of "main" is to normalize to 1.
    pirate_syntax:add(_([[
-    main = "{_PIRATE}" 1
-    _PIRATE =
+    main 1 =
      {PIRATE_0} |
      {PIRATE_1} |
      {PIRATE_2} |

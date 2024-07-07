@@ -476,6 +476,28 @@ function test_generator.run_test()
          ph2:get_weight() == 26 + 2 + 26 + 5 + 26 + 6
    end
 
+   function tests.nonterminal_with_weight()
+      local ph = phrase.new([[
+         main 1 = A | B | C | D | E
+      ]])
+      ph:add([[
+         main 1 = 1
+      ]])
+      local dist = {
+         ["A"] = 0.1,
+         ["B"] = 0.1,
+         ["C"] = 0.1,
+         ["D"] = 0.1,
+         ["E"] = 0.1,
+         ["1"] = 0.5,
+      }
+      phrase.set_random_function(math.random)
+      local good = check_distribution(ph, ph.generate, 100000, dist, 0.01)
+      return good and
+         ph:get_combination_number() == 6 and
+         ph:get_weight() == 2
+   end
+
 
    return ut:runner("Generator Test", tests, { verbose = false })
 end

@@ -119,6 +119,6 @@ return function ()
      Wraith |
      Zombie
 
-    main = "{NAME} {LETTER}{SUFFIX}" 1
+    main 1 = "{NAME} {LETTER}{SUFFIX}"
    ]]))
 end

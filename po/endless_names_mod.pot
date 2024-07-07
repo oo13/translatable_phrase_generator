@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-06 19:26+0900\n"
+"POT-Creation-Date: 2024-07-07 13:29+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -851,10 +851,9 @@ msgid ""
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:858
+#: events/pilotname/endless_names.lua:855
 msgid ""
-"    main = \"{_MAIN}\" 1\n"
-"    _MAIN =\n"
+"    main 1 =\n"
 "     {MAIN_0} |\n"
 "     {MAIN_1} |\n"
 "     {MAIN_2} |\n"
@@ -870,7 +869,7 @@ msgid ""
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:884
+#: events/pilotname/endless_names.lua:881
 msgid ""
 "    SINISTER_NAMES =\n"
 "     Blackbeard |\n"
@@ -916,7 +915,7 @@ msgid ""
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:928
+#: events/pilotname/endless_names.lua:925
 msgid ""
 "    PIRATE_ADJECTIVES =\n"
 "     Sea |\n"
@@ -985,7 +984,7 @@ msgid ""
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:995
+#: events/pilotname/endless_names.lua:992
 msgid ""
 "    PIRATE_ADJECTIVES_THAT_DONT_WORK_BEFORE_SINGULAR_NOUNS =\n"
 "     Flames of |\n"
@@ -996,7 +995,7 @@ msgid ""
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:1004
+#: events/pilotname/endless_names.lua:1001
 msgid ""
 "    PIRATE_NOUNS =\n"
 "     Star |\n"
@@ -1069,7 +1068,7 @@ msgid ""
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:1075
+#: events/pilotname/endless_names.lua:1072
 msgid ""
 "    BAD_OUTCOMES =\n"
 "     Doom |\n"
@@ -1114,7 +1113,7 @@ msgid ""
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:1118
+#: events/pilotname/endless_names.lua:1115
 msgid ""
 "    PIRATE_0 =\n"
 "     Caleuche |\n"
@@ -1224,7 +1223,7 @@ msgid ""
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:1226
+#: events/pilotname/endless_names.lua:1223
 msgid ""
 "    PIRATE_1 =\n"
 "     {PIRATE_ADJECTIVES} {= {PIRATE_NOUNS} | {SINISTER_NAMES} | "
@@ -1232,7 +1231,7 @@ msgid ""
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:1231
+#: events/pilotname/endless_names.lua:1228
 msgid ""
 "    PIRATE_2 = {SUB_20} {SUB_21}\n"
 "\n"
@@ -1246,19 +1245,19 @@ msgid ""
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:1243
+#: events/pilotname/endless_names.lua:1240
 msgid ""
 "    PIRATE_3 = {SINISTER_NAMES}'s {= {PIRATE_NOUNS} | {BAD_OUTCOMES} }\n"
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:1247
+#: events/pilotname/endless_names.lua:1244
 msgid ""
 "    PIRATE_4 = {PIRATE_NOUNS} of {BAD_OUTCOMES}\n"
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:1251
+#: events/pilotname/endless_names.lua:1248
 msgid ""
 "    PIRATE_5 = {SUB_50}{SUB_51}\n"
 "\n"
@@ -1351,10 +1350,9 @@ msgid ""
 "   "
 msgstr ""
 
-#: events/pilotname/endless_names.lua:1345
+#: events/pilotname/endless_names.lua:1340
 msgid ""
-"    main = \"{_PIRATE}\" 1\n"
-"    _PIRATE =\n"
+"    main 1 =\n"
 "     {PIRATE_0} |\n"
 "     {PIRATE_1} |\n"
 "     {PIRATE_2} |\n"
@@ -1457,7 +1455,7 @@ msgid ""
 "     Wraith |\n"
 "     Zombie\n"
 "\n"
-"    main = \"{NAME} {LETTER}{SUFFIX}\" 1\n"
+"    main 1 = \"{NAME} {LETTER}{SUFFIX}\"\n"
 "   "
 msgstr ""
 
@@ -1966,15 +1964,13 @@ msgid ""
 "     Youma |\n"
 "     Zombie\n"
 "\n"
-"    PIRATE =\n"
+"    main 1 =\n"
 "     {ARTICLE} {ACTOR} |\n"
 "     {COLOUR} {ACTOR} |\n"
 "     {DESCRIPTOR} {ACTOR} |\n"
 "     {ARTICLE} {DESCRIPTOR} {ACTOR} |\n"
 "     {ARTICLE} {COLOUR} {ACTOR} |\n"
 "     {ARTICLE} {DESCRIPTOR} {COLOUR} {ACTOR}\n"
-"\n"
-"    main = \"{PIRATE}\" 1\n"
 "   "
 msgstr ""
 

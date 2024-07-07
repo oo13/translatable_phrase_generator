@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: endless_names_plugin_for_naev 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-06 19:26+0900\n"
+"POT-Creation-Date: 2024-07-07 13:29+0900\n"
 "PO-Revision-Date: 2024-06-22 19:46+0900\n"
 "Last-Translator: OOTA, Masato <ooyooxei+gh@gmail.com>\n"
 "Language-Team: None\n"
@@ -1668,10 +1668,9 @@ msgstr ""
 " SUB_B1 = {PLURAL_NOUNS} | {NOUNS_OF_INDETERMINATE_QUANTITY}\n"
 " "
 
-#: events/pilotname/endless_names.lua:858
+#: events/pilotname/endless_names.lua:855
 msgid ""
-"    main = \"{_MAIN}\" 1\n"
-"    _MAIN =\n"
+"    main 1 =\n"
 "     {MAIN_0} |\n"
 "     {MAIN_1} |\n"
 "     {MAIN_2} |\n"
@@ -1686,8 +1685,7 @@ msgid ""
 "     {MAIN_B}\n"
 "   "
 msgstr ""
-" main = \"{_MAIN}\" 1\n"
-" _MAIN =\n"
+" main 1 =\n"
 "  {MAIN_0} |\n"
 "  {MAIN_1} |\n"
 "  {MAIN_2} |\n"
@@ -1702,7 +1700,7 @@ msgstr ""
 "  {MAIN_B}\n"
 " "
 
-#: events/pilotname/endless_names.lua:884
+#: events/pilotname/endless_names.lua:881
 msgid ""
 "    SINISTER_NAMES =\n"
 "     Blackbeard |\n"
@@ -1790,7 +1788,7 @@ msgstr ""
 "  マラカイ {* Malachai }\n"
 " "
 
-#: events/pilotname/endless_names.lua:928
+#: events/pilotname/endless_names.lua:925
 msgid ""
 "    PIRATE_ADJECTIVES =\n"
 "     Sea |\n"
@@ -1924,7 +1922,7 @@ msgstr ""
 "  絶望する {* Despairing } \n"
 " "
 
-#: events/pilotname/endless_names.lua:995
+#: events/pilotname/endless_names.lua:992
 msgid ""
 "    PIRATE_ADJECTIVES_THAT_DONT_WORK_BEFORE_SINGULAR_NOUNS =\n"
 "     Flames of |\n"
@@ -1942,7 +1940,7 @@ msgstr ""
 "  の高笑い {* Cackles of }\n"
 " "
 
-#: events/pilotname/endless_names.lua:1004
+#: events/pilotname/endless_names.lua:1001
 msgid ""
 "    PIRATE_NOUNS =\n"
 "     Star |\n"
@@ -2084,7 +2082,7 @@ msgstr ""
 "  復讐 {* Revenge }\n"
 " "
 
-#: events/pilotname/endless_names.lua:1075
+#: events/pilotname/endless_names.lua:1072
 msgid ""
 "    BAD_OUTCOMES =\n"
 "     Doom |\n"
@@ -2170,7 +2168,7 @@ msgstr ""
 "  圧政 {* Oppression }\n"
 " "
 
-#: events/pilotname/endless_names.lua:1118
+#: events/pilotname/endless_names.lua:1115
 msgid ""
 "    PIRATE_0 =\n"
 "     Caleuche |\n"
@@ -2386,7 +2384,7 @@ msgstr ""
 "  デスズ・ヘッド {* Death's Head }\n"
 " "
 
-#: events/pilotname/endless_names.lua:1226
+#: events/pilotname/endless_names.lua:1223
 msgid ""
 "    PIRATE_1 =\n"
 "     {PIRATE_ADJECTIVES} {= {PIRATE_NOUNS} | {SINISTER_NAMES} | "
@@ -2399,7 +2397,7 @@ msgstr ""
 " "
 
 # pirate adjectivesのやつはすでにあるので削除
-#: events/pilotname/endless_names.lua:1231
+#: events/pilotname/endless_names.lua:1228
 msgid ""
 "    PIRATE_2 = {SUB_20} {SUB_21}\n"
 "\n"
@@ -2422,7 +2420,7 @@ msgstr ""
 "  {PIRATE_ADJECTIVES_THAT_DONT_WORK_BEFORE_SINGULAR_NOUNS}\n"
 " "
 
-#: events/pilotname/endless_names.lua:1243
+#: events/pilotname/endless_names.lua:1240
 msgid ""
 "    PIRATE_3 = {SINISTER_NAMES}'s {= {PIRATE_NOUNS} | {BAD_OUTCOMES} }\n"
 "   "
@@ -2430,7 +2428,7 @@ msgstr ""
 " PIRATE_3 = {SINISTER_NAMES}の{= {PIRATE_NOUNS} | {BAD_OUTCOMES} }\n"
 " "
 
-#: events/pilotname/endless_names.lua:1247
+#: events/pilotname/endless_names.lua:1244
 msgid ""
 "    PIRATE_4 = {PIRATE_NOUNS} of {BAD_OUTCOMES}\n"
 "   "
@@ -2439,7 +2437,7 @@ msgstr ""
 " "
 
 # 海賊船 つながって熟語になるので音訳
-#: events/pilotname/endless_names.lua:1251
+#: events/pilotname/endless_names.lua:1248
 msgid ""
 "    PIRATE_5 = {SUB_50}{SUB_51}\n"
 "\n"
@@ -2621,10 +2619,9 @@ msgstr ""
 "  フィーンド {* fiend }\n"
 " "
 
-#: events/pilotname/endless_names.lua:1345
+#: events/pilotname/endless_names.lua:1340
 msgid ""
-"    main = \"{_PIRATE}\" 1\n"
-"    _PIRATE =\n"
+"    main 1 =\n"
 "     {PIRATE_0} |\n"
 "     {PIRATE_1} |\n"
 "     {PIRATE_2} |\n"
@@ -2633,8 +2630,7 @@ msgid ""
 "     {PIRATE_5}\n"
 "   "
 msgstr ""
-" main = \"{_PIRATE}\" 1\n"
-" _PIRATE =\n"
+" main 1 =\n"
 "  {PIRATE_0} |\n"
 "  {PIRATE_1} |\n"
 "  {PIRATE_2} |\n"
@@ -2736,7 +2732,7 @@ msgid ""
 "     Wraith |\n"
 "     Zombie\n"
 "\n"
-"    main = \"{NAME} {LETTER}{SUFFIX}\" 1\n"
+"    main 1 = \"{NAME} {LETTER}{SUFFIX}\"\n"
 "   "
 msgstr ""
 " NAME =\n"
@@ -2830,7 +2826,7 @@ msgstr ""
 "  レイス {* Wraith } |\n"
 "  ゾンビ {* Zombie }\n"
 "\n"
-" main = \"{NAME} {LETTER}{SUFFIX} \" 1 ~ /  // ~ /([^A-Z0-9α-Ψ]) $/%1/\n"
+" main 1 = \"{NAME} {LETTER}{SUFFIX} \" ~ /  // ~ /([^A-Z0-9α-Ψ]) $/%1/\n"
 " "
 
 #: events/pilotname/pirate.lua:30
@@ -3338,15 +3334,13 @@ msgid ""
 "     Youma |\n"
 "     Zombie\n"
 "\n"
-"    PIRATE =\n"
+"    main 1 =\n"
 "     {ARTICLE} {ACTOR} |\n"
 "     {COLOUR} {ACTOR} |\n"
 "     {DESCRIPTOR} {ACTOR} |\n"
 "     {ARTICLE} {DESCRIPTOR} {ACTOR} |\n"
 "     {ARTICLE} {COLOUR} {ACTOR} |\n"
 "     {ARTICLE} {DESCRIPTOR} {COLOUR} {ACTOR}\n"
-"\n"
-"    main = \"{PIRATE}\" 1\n"
 "   "
 msgstr ""
 " ARTICLE =\n"
@@ -3852,7 +3846,7 @@ msgstr ""
 "  妖魔 {* Youma } |\n"
 "  ゾンビ {* Zombie }\n"
 "\n"
-" PIRATE =\n"
+" main 1 =\n"
 "  {ARTICLE}・{ACTOR} |\n"
 "  {COLOUR}・{ACTOR} |\n"
 "  {DESCRIPTOR}・{ACTOR} |\n"
@@ -3862,8 +3856,6 @@ msgstr ""
 "  /ザ・@/ジ・/ ~\n"
 "  /ジャ・@/ジ・/ ~\n"
 "  /@//g\n"
-"\n"
-" main = \"{PIRATE}\" 1\n"
 " "
 
 #: scripts/pilotname/generic.lua:32
