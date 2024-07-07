@@ -305,6 +305,7 @@ function test_functions.run_test()
    end
 
    function tests.compile_add_overwrite_nonterminal()
+      error_is_expected = true
       local compiled = phrase.compile([[A = 1]])
       local result = compiled:add([[A = 2]])
       compiled:add([[main = {A}]])
@@ -314,7 +315,8 @@ function test_functions.run_test()
          ph:get_number_of_syntax() == 1 and
          ph:get_combination_number() == 1 and
          ph:get_weight() == 1 and
-         ph:generate() == "2"
+         ph:generate() == "2" and
+         error_messages == 'The nonterminal "A" is already defined.\n'
    end
 
    return ut:runner("Function Test", tests, { verbose = false })

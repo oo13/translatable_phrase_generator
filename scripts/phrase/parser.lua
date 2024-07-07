@@ -282,7 +282,10 @@ function parse_assignment(it, syntax)
       if op_type == ":" then
          rule:equalize_chance(true)
       end
-      syntax:add(nonterminal, rule)
+      local err_msg = syntax:add(nonterminal, rule)
+      if err_msg ~= "" then
+         throw_parse_error(it, err_msg)
+      end
    else
       throw_parse_error(it, 'The end of the text or "\\n" is expected.')
    end

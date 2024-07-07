@@ -73,7 +73,7 @@ function phrase:add(text_or_compiled, start_condition)
       err_msg = ""
       syntax = text_or_compiled.data:clone()
    else
-      phrase.output_error("Invalid parameter type.")
+      phrase.output_error("Invalid parameter type.\n")
       return false
    end
    if err_msg == "" then
@@ -147,7 +147,10 @@ end
    return: false if the phrase syntax fail to add into the instance due to some errors.
 
    note: output_error() and output_compile_error() is if when some errors are detected.
-   note: The production rules for the existing nonterminals is overwritten if "text_or_compiled" has the assignment for the same nonterminal.
+   note: If "text_or_compiled" has the nonterminal that self already contains, then
+      - The nonterminal in "text_or_compiled" overwrites it.
+      - Output an error message.
+      - Return true unless other error is detected.
 --]]
 function compiled_syntax_add(self, text_or_compiled)
    local compiled_to_add = nil
@@ -157,10 +160,13 @@ function compiled_syntax_add(self, text_or_compiled)
       compiled_to_add = {}
       compiled_to_add.data = text_or_compiled.data:clone()
    else
-      phrase.output_error("Invalid parameter type.")
+      phrase.output_error("Invalid parameter type.\n")
    end
    if compiled_to_add then
-      self.data:add(compiled_to_add.data)
+      local err_msg = self.data:add(compiled_to_add.data)
+      if err_msg ~= "" then
+         phrase.output_error(err_msg)
+      end
       return true
    else
       return false

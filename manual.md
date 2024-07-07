@@ -132,7 +132,7 @@ It can use to create a common library with some assignments, but the number of t
 
 # Syntax of the Phrase Syntax
 ## Overview
-The phrase syntax consists of assignments. The order of the assignments doesn't affect the generated text. The recursive reference is not allowed.
+The phrase syntax consists of assignments. The order of the assignments doesn't affect the generated text. The recursive reference is not allowed. The multiple definition for a nonterminal occurs an error.
 
 It needs a definition of the nonterminal where is the start condition to generate the phrase. It's "main" by default.
 
@@ -446,8 +446,11 @@ Errors:
 
 Note:
 - output_error() and output_compile_error() is called if when some errors are detected.
-- The production rules for the existing nonterminals is overwritten if "text_or_compiled" has the assignment for the same nonterminal.
 - compile() is called if "text_or_compiled" is a string.
+- If "text_or_compiled" has the nonterminal that self already contains, then
+  - The nonterminal in "text_or_compiled" overwrites it.
+  - Output an error message by output_error().
+  - Return true unless other error is detected.
 
 # Requirement
 

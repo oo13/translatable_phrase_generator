@@ -385,6 +385,7 @@ function test_generator.run_test()
    end
 
    function tests.overwrite_nonterminal()
+      error_is_expected = true
       local sub = phrase.compile([[
          sub = A
       ]])
@@ -394,7 +395,8 @@ function test_generator.run_test()
       ]])
       main:add(sub)
       local ph = phrase.new(main)
-      return ph:generate() == "A"
+      return ph:generate() == "A" and
+         error_messages == 'The nonterminal "sub" is already defined.\n'
    end
 
    function tests.dont_overwrite_local_nonterminal()
@@ -451,6 +453,7 @@ function test_generator.run_test()
    end
 
    function tests.sharing_rule_and_sharing_syntax()
+      error_is_expected = true
       local main = phrase.compile([[
          main = {A} | {B} | {C}
          A = A1 A2 {COMMON} | A3 {AB} A4 | {AC} A5 A6
@@ -473,7 +476,8 @@ function test_generator.run_test()
          ph1:get_combination_number() == 19 + 2 + 19 + 4 + 19 + 6 and
          ph2:get_combination_number() == 17 + 2 + 17 + 4 + 17 + 4 and
          ph1:get_weight() == 28 + 2 + 28 + 5 + 28 + 8 and
-         ph2:get_weight() == 26 + 2 + 26 + 5 + 26 + 6
+         ph2:get_weight() == 26 + 2 + 26 + 5 + 26 + 6 and
+         error_messages == 'The nonterminal "CB" is already defined.\n'
    end
 
    function tests.nonterminal_with_weight()

@@ -408,6 +408,19 @@ function test_parser.run_test()
       return r == "9"
    end
 
+   function tests.redefined_nonterminal_error()
+      local ph = phrase.new()
+      error_is_expected = true
+      ph:add([[
+         main = {A}
+         A = 1 | 2 | 3
+         A = 4 | 5 | 6
+      ]])
+      local r = ph:generate()
+      return r == "nil" and
+         string.find(error_messages, 'The nonterminal "A" is already defined.', 1, true)
+   end
+
    return ut:runner("Parser Test", tests, { verbose = false })
 end
 

@@ -577,16 +577,23 @@ function data.new_syntax ()
    end
 
    syntax.add = function (self, nonterminal_or_syntax, production_rule)
-      if nonterminal_or_syntax == nil then
-         return
-      elseif production_rule ~= nil then
-         self.assignments[nonterminal_or_syntax] = production_rule
+      local err_msg = ""
+      if production_rule ~= nil then
+         if self.assignments[nonterminal_or_syntax] then
+            err_msg = 'The nonterminal "' .. nonterminal_or_syntax .. '" is already defined.\n'
+         else
+            self.assignments[nonterminal_or_syntax] = production_rule
+         end
       else
          for n, p in pairs(nonterminal_or_syntax.assignments) do
+            if self.assignments[n] then
+               err_msg = err_msg .. 'The nonterminal "' .. n .. '" is already defined.\n'
+            end
             self.assignments[n] = p
          end
       end
       self.is_bound = false
+      return err_msg
    end
 
    syntax.is_valid = function (self)
