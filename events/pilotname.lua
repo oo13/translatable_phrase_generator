@@ -35,9 +35,11 @@ function create ()
    -- Reset the pilotname
    static_phrase_generator.reset()
 
-   -- Check the subdirectory "events/pilotname" as it's the Naev manner.
+   -- Check the subdirectory "events/pilotname" as it's the Naev manner, but only "*.lua" files.
    for k, v in ipairs(lf.getDirectoryItems("events/pilotname")) do
-      require("events.pilotname." .. string.gsub(v, ".lua", ""))()
+      if string.sub(v, -4, -1) == ".lua" then
+         require("events.pilotname." .. string.sub(v, 1, -5))()
+      end
    end
 
    -- You can add a phrase syntax into the static phrase generator at any time.
