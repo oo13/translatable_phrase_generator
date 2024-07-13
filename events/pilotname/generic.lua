@@ -22,12 +22,12 @@ Copyright © 2021 bobbens@github
 --]]
 
 local static_phrase_generator = require "static_phrase_generator"
+local phrase = require "phrase"
 
 return function ()
-   local ph = static_phrase_generator.get("pilotname_generic")
+   local syntax = phrase.compile()
 
-   -- The weight of "main" is to normalize to 1.
-   ph:add(_([[
+   syntax:add(_([[
     NAME =
      Aurochs |
      Axis |
@@ -118,7 +118,35 @@ return function ()
      Wolf |
      Wraith |
      Zombie
-
-    main 1 = "{NAME} {LETTER}{SUFFIX}"
    ]]))
+
+   -- "1" to "99"  The rational person counts from zero.😆
+   syntax:add(_([[
+    _N19 = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+    NUM = {_N19}{_N19} | {_N19} | {_N19}0
+   ]]))
+
+   syntax:add(_([[
+    _I = I | II | III | IV | V | VI | VII | VIII | IX
+    _X = X | XX | XXX | XL | L | LX | LXX | LXXX | XC
+    ROMAN_NUM = {_X}{_I} | {_I} | {_X}
+   ]]))
+
+   -- I doubt _NUMBER is intentional, but Naev does so.
+   syntax:add(_([[
+    _GREEK = α | β | γ | δ | ε | ζ | Δ | Σ | Ψ | Ω
+    _NUMBER = "1" 0.4 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | "11" 0.5
+    SUFFIX = "{_GREEK}" 0.5 | "{_GREEK}-{_NUMBER}" 0.5
+   ]]))
+
+   -- The weight of "main" is to normalize to 1.
+   syntax:add(_([[
+    main 1 =
+     "{NAME} {NUM}" 0.5 |
+     "{NAME} {ROMAN_NUM}" 0.35 |
+     "{NAME} {SUFFIX}" 0.15
+   ]]))
+
+   local ph = static_phrase_generator.get("pilotname_generic")
+   ph:add(syntax)
 end

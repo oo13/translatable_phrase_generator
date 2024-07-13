@@ -22,39 +22,13 @@ Copyright © 2021 bobbens@github
 --]]
 
 local static_phrase_generator = require "static_phrase_generator"
-local utility = require "pilotname.utility"
-local phrase = require "phrase"
-local naev_rnd = require "phrase.naev_rnd_wrapper"
-
-phrase.output_error = warn
-phrase.set_random_function(naev_rnd.f)
-
-local greek = phrase.new(_([[
- main = α | β | γ | δ | ε | ζ | Δ | Σ | Ψ | Ω
-]]))
 
 --[[
 -- @brief Generates generic pilot names
 --]]
 local function generic ()
-   local num = rnd.rnd(1, 99)
-   local str
-   local letter = ""
-   local r = rnd.rnd()
-   if r < 0.5 then
-      str = tostring(num)
-   elseif r < 0.85 then
-      str = utility.roman_encode(num)
-   else
-      letter = greek:generate()
-      str = ""
-      if rnd.rnd() < 0.5 then
-         local comb = greek:get_combination_number()
-         str = tostring(math.floor(num/comb+0.5)+1)
-      end
-   end
    local pilotname_generic = static_phrase_generator.get("pilotname_generic")
-   return pilotname_generic:generate({ LETTER = letter, SUFFIX = str })
+   return pilotname_generic:generate()
 end
 
 return generic
