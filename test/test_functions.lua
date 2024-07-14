@@ -239,6 +239,108 @@ function test_functions.run_test()
          ph:generate() == "2"
    end
 
+   function tests.phrase_delete_first()
+      ut:set_random_sequence({ 0.9, 0.9, 0.9, 0.9, 0.9, 0.9 })
+      local ph = phrase.new()
+      local id1 = ph:add([[main = "1" 2 | 2 | 3]])
+      local id2 = ph:add([[main = A | "B" 3 | C]])
+      local id3 = ph:add([[main = あ | い | "う" 4]])
+      local r3 = ph:generate()
+      local n3 = ph:get_number_of_syntax()
+      local c3 = ph:get_combination_number()
+      local w3 = ph:get_weight()
+      local del3 = ph:delete(id1)
+      local r2 = ph:generate()
+      local n2 = ph:get_number_of_syntax()
+      local c2 = ph:get_combination_number()
+      local w2 = ph:get_weight()
+      local del2 = ph:delete(id2)
+      local r1 = ph:generate()
+      local n1 = ph:get_number_of_syntax()
+      local c1 = ph:get_combination_number()
+      local w1 = ph:get_weight()
+      local del1 = ph:delete(id3)
+      local r0 = ph:generate()
+      local n0 = ph:get_number_of_syntax()
+      local c0 = ph:get_combination_number()
+      local w0 = ph:get_weight()
+      return
+         del1 and del2 and del3 and
+         id1 and id2 and id3 and
+         r3 == "う" and r2 == "う" and r1 == "う" and r0 == "nil" and
+         n3 == 3 and n2 == 2 and n1 == 1 and n0 == 0 and
+         c3 == 9 and c2 == 6 and c1 == 3 and c0 == 0 and
+         w3 == 15 and w2 == 11 and w1 == 6 and w0 == 0
+   end
+
+   function tests.phrase_delete_last()
+      ut:set_random_sequence({ 0.9, 0.9, 0.9, 0.9, 0.9, 0.9 })
+      local ph = phrase.new()
+      local id1 = ph:add([[main = "1" 2 | 2 | 3]])
+      local id2 = ph:add([[main = A | "B" 3 | C]])
+      local id3 = ph:add([[main = あ | い | "う" 4]])
+      local r3 = ph:generate()
+      local n3 = ph:get_number_of_syntax()
+      local c3 = ph:get_combination_number()
+      local w3 = ph:get_weight()
+      local del3 = ph:delete(id3)
+      local r2 = ph:generate()
+      local n2 = ph:get_number_of_syntax()
+      local c2 = ph:get_combination_number()
+      local w2 = ph:get_weight()
+      local del2 = ph:delete(id2)
+      local r1 = ph:generate()
+      local n1 = ph:get_number_of_syntax()
+      local c1 = ph:get_combination_number()
+      local w1 = ph:get_weight()
+      local del1 = ph:delete(id1)
+      local r0 = ph:generate()
+      local n0 = ph:get_number_of_syntax()
+      local c0 = ph:get_combination_number()
+      local w0 = ph:get_weight()
+      return
+         del1 and del2 and del3 and
+         id1 and id2 and id3 and
+         r3 == "う" and r2 == "C" and r1 == "3" and r0 == "nil" and
+         n3 == 3 and n2 == 2 and n1 == 1 and n0 == 0 and
+         c3 == 9 and c2 == 6 and c1 == 3 and c0 == 0 and
+         w3 == 15 and w2 == 9 and w1 == 4 and w0 == 0
+   end
+
+   function tests.phrase_delete_middle()
+      ut:set_random_sequence({ 0.9, 0.9, 0.9, 0.9, 0.9, 0.9 })
+      local ph = phrase.new()
+      local id1 = ph:add([[main = "1" 2 | 2 | 3]])
+      local id2 = ph:add([[main = A | "B" 3 | C]])
+      local id3 = ph:add([[main = あ | い | "う" 4]])
+      local r3 = ph:generate()
+      local n3 = ph:get_number_of_syntax()
+      local c3 = ph:get_combination_number()
+      local w3 = ph:get_weight()
+      local del3 = ph:delete(id2)
+      local r2 = ph:generate()
+      local n2 = ph:get_number_of_syntax()
+      local c2 = ph:get_combination_number()
+      local w2 = ph:get_weight()
+      local del2 = ph:delete(id1)
+      local r1 = ph:generate()
+      local n1 = ph:get_number_of_syntax()
+      local c1 = ph:get_combination_number()
+      local w1 = ph:get_weight()
+      local del1 = ph:delete(id3)
+      local r0 = ph:generate()
+      local n0 = ph:get_number_of_syntax()
+      local c0 = ph:get_combination_number()
+      local w0 = ph:get_weight()
+      return
+         del1 and del2 and del3 and
+         id1 and id2 and id3 and
+         r3 == "う" and r2 == "う" and r1 == "う" and r0 == "nil" and
+         n3 == 3 and n2 == 2 and n1 == 1 and n0 == 0 and
+         c3 == 9 and c2 == 6 and c1 == 3 and c0 == 0 and
+         w3 == 15 and w2 == 10 and w1 == 6 and w0 == 0
+   end
+
    function tests.compile_add_1()
       local compiled = phrase.compile()
       local result = compiled:add([[B = 2]])

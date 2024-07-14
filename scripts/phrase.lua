@@ -59,7 +59,7 @@ end
    param: text_or_compiled  A text or a compiled data of the phrase syntax.
           start_condition  A string that has the name of the nonterminal where is the start condition, or nil that means "main".
 
-   return: false if the phrase syntax fail to add into the phrase generator due to some errors.
+   return: ID for the syntax added into the phrase, or nil if the phrase syntax fail to add into the phrase generator due to some errors.
 
    note: output_error() and output_compile_error() is if when some errors are detected.
 --]]
@@ -74,7 +74,7 @@ function phrase:add(text_or_compiled, start_condition)
       syntax = text_or_compiled.data:clone()
    else
       phrase.output_error("Invalid parameter type.\n")
-      return false
+      return nil
    end
    if err_msg == "" then
       if start_condition == nil then
@@ -87,10 +87,23 @@ function phrase:add(text_or_compiled, start_condition)
    end
    if err_msg ~= "" then
       self.output_compile_error(text, err_msg)
-      return false
+      return nil
    else
-      return true
+      return syntax
    end
+end
+
+--[[
+   Delete the phrase syntax from the instance.
+
+   param: ID for the syntax.
+
+   return: true if the syntax is deleted.
+
+   note: This is an O(n) function, because it's assumed that the function is not used frequently.
+--]]
+function phrase:delete(id)
+   return self.data:delete(id)
 end
 
 --[[

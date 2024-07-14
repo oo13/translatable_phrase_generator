@@ -376,7 +376,7 @@ Parameter:
 - "start_condition" is a string that has the name of the nonterminal where is the start condition, or nil that means "main".
 
 Return:
-- false if the phrase syntax fail to add into the instance due to some errors.
+- ID for the syntax added into the phrase, or nil if the phrase syntax fail to add into the phrase generator due to some errors.
 
 Errors:
 - Invalid parameter error if the parameter is neither a string or a compiled data.
@@ -385,6 +385,19 @@ Errors:
 
 Note:
 - output_error() and output_compile_error() is called if some errors are detected.
+
+### delete(self, id)
+
+It deletes a phrase syntax from the instance.
+
+Parameter:
+- "id" is the ID for the phrase syntax to delete from the instance.
+
+Return:
+- true if the syntax is deleted.
+
+Note:
+- This is an O(n) function, because it's assumed that the function is not used frequently.
 
 ### generate(self, ext_context)
 

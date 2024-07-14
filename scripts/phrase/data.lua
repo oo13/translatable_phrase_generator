@@ -661,6 +661,7 @@ end
    .generate(): generate a text.
 
    .add(): add a syntax into the phrase.
+   .delete(): delete a syntax into the phrase.
    .equalize_chance(): Equalize the chance to select each phrase syntax.
    .get_number_of_syntax(): The number of the syntaxes in the phrase.
    .get_weight(): The sum of the weight of the syntaxes.
@@ -708,6 +709,29 @@ function data.new_phrase_data ()
       self.weights[new_idx] = sum + syntax:get_weight()
 
       return true
+   end
+
+   phrase.delete = function (self, id)
+      local deleted = false
+      local sum = 0.0
+      for i, v in ipairs(self.syntaxes) do
+         if deleted then
+            self.syntaxes[i - 1] = self.syntaxes[i]
+            sum = sum + self.syntaxes[i - 1]:get_weight()
+            self.weights[i - 1] = sum
+         elseif v == id then
+            deleted = true
+            if i >= 2 then
+               sum = self.weights[i - 1]
+            end
+         end
+      end
+      if deleted then
+         local last = #self.syntaxes
+         self.syntaxes[last] = nil
+         self.weights[last] = nil
+      end
+      return deleted
    end
 
    phrase.equalize_chance = function (self, enable)
