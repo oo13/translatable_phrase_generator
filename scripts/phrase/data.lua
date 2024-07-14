@@ -711,27 +711,27 @@ function data.new_phrase_data ()
       return true
    end
 
-   phrase.delete = function (self, id)
-      local deleted = false
+   phrase.remove = function (self, id)
+      local removed = false
       local sum = 0.0
       for i, v in ipairs(self.syntaxes) do
-         if deleted then
+         if removed then
             self.syntaxes[i - 1] = self.syntaxes[i]
             sum = sum + self.syntaxes[i - 1]:get_weight()
             self.weights[i - 1] = sum
          elseif v == id then
-            deleted = true
+            removed = true
             if i >= 2 then
                sum = self.weights[i - 1]
             end
          end
       end
-      if deleted then
+      if removed then
          local last = #self.syntaxes
          self.syntaxes[last] = nil
          self.weights[last] = nil
       end
-      return deleted
+      return removed
    end
 
    phrase.equalize_chance = function (self, enable)

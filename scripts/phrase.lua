@@ -94,16 +94,16 @@ function phrase:add(text_or_compiled, start_condition)
 end
 
 --[[
-   Delete the phrase syntax from the instance.
+   Remove the phrase syntax from the instance.
 
    param: ID for the syntax.
 
-   return: true if the syntax is deleted.
+   return: true if the syntax is removed.
 
    note: This is an O(n) function, because it's assumed that the function is not used frequently.
 --]]
-function phrase:delete(id)
-   return self.data:delete(id)
+function phrase:remove(id)
+   return self.data:remove(id)
 end
 
 --[[

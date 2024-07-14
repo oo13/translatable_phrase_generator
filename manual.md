@@ -386,15 +386,15 @@ Errors:
 Note:
 - output_error() and output_compile_error() is called if some errors are detected.
 
-### delete(self, id)
+### remove(self, id)
 
-It deletes a phrase syntax from the instance.
+It removes a phrase syntax from the instance.
 
 Parameter:
-- "id" is the ID for the phrase syntax to delete from the instance.
+- "id" is the ID for the phrase syntax to remove from the instance.
 
 Return:
-- true if the syntax is deleted.
+- true if the syntax is removed.
 
 Note:
 - This is an O(n) function, because it's assumed that the function is not used frequently.
