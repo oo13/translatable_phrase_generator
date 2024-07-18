@@ -19,20 +19,24 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        version: [5.1, 5.2, 5.3, 5.4]
+        version: [5.1, 5.2, 5.3, 5.4, jit]
+    env:
+      LUATYPE: ${{ matrix.version }}
+      LUALIB: ${{ matrix.version == 'jit' && 'jit-5.1' || matrix.version }}
+      LUAROCKVER: ${{ matrix.version == 'jit' && '5.1' || matrix.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Lua
-        run: sudo apt-get install lua${{ matrix.version }} liblua${{ matrix.version }}-dev luarocks
+        run: sudo apt-get install lua${{ env.LUATYPE }} liblua${{ env.LUALIB }}-dev luarocks
 
       - name: Configure Luarocks
-        run: luarocks config lua_version ${{ matrix.version }}
+        run: luarocks config lua_version ${{ env.LUAROCKVER }}
 
       - name: Install lua-utf8
         run: luarocks --local install luautf8
 
       - name: Run Test
         working-directory: test
-        run: ./test_all ${{ matrix.version }}
+        run: ./test_all ${{ env.LUATYPE }}

@@ -1,9 +1,17 @@
 #!/bin/sh
 set -e
 
-VER=$1
+LUATYPE=$1
+if [ -z ${LUATYPE} ] ; then
+  LUATYPE=5.1
+fi
+if [ ${LUATYPE} = "jit" ] ; then
+  VER=5.1
+else
+  VER=${LUATYPE}
+fi
 
 luarocks config lua_version ${VER}
 eval `luarocks path`
-lua${VER} test_main_normal.lua
-lua${VER} test_encoding_error.lua
+lua${LUATYPE} test_main_normal.lua
+lua${LUATYPE} test_encoding_error.lua
