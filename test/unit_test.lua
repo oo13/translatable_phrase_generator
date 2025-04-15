@@ -54,7 +54,7 @@ function unit_test.new()
       end
       if num_errors == 0 then
          io.write("No errors are detected")
-      elseif num_tests == 1 then
+      elseif num_errors == 1 then
          io.write("An error is detected")
       else
          io.write(num_errors .. " errors are detected")
