@@ -31,6 +31,7 @@ As far as I had experienced about translating the phrase node in my translatable
 - Don't care some white spaces for readability.
 
 ## Example of Phrase Syntax
+### Avoid combination explosion
 Japanese translation of Arach ship's name in Endless Sky (excerpt):
 ```
 ARACH_START= マg | グラb | ブロg | ブロp | ブラb | モg | モb {* | ... }
@@ -53,7 +54,7 @@ main = {ARACH_START}{ARACH_MIDDLE}{=
 ```
 Gsubs handle the characters that must be replaced by the combination with preceding and succeeding words.
 
-Inflection:
+### Inflection
 ```
 ARTICLES = a | the | that | its
 NOUNS = @apple | banana | @orange | @avocado | watermelon
@@ -62,6 +63,7 @@ main = {ARTICLES} {NOUNS} ~
        /@//
 ```
 
+### Translate a single word into some different words
 An example that an English word cannot translates into the same word in Japanese.
 English version:
 ```
@@ -80,18 +82,73 @@ main = あなたは{ECONOMICAL_SITUATION}です。 |
 ```
 If you use a simple substitution instead of a translatable phrase generator, it cannot translate. For example:
 ```
-   if (rand() > 0.5) {
-      word = _("poor");
-   } else {
-      word = _("rich");
-   }
-   if (rand() > 0.5) {
-      message = format(_("You are %s."), word);
-   } else {
-      message = format(_("You purchased a %s ship."), word);
-   }
+   if (math.random() > 0.5) then
+      word = _("poor")
+   else
+      word = _("rich")
+   end
+   if (math.random() > 0.5) then
+      print(string.format(_("You are %s."), word))
+   else
+      print(string.format(_("You purchased a %s ship."), word))
+   end
 ```
 The translator can create only two independent messages at most but Japanese translator need four independent messages.
+
+### Alternative to printf
+This phrase generator can play a role of printf by "external context":
+```
+    if (money < 10000) then
+       s = _("poor")
+    else
+       s = _("rich")
+    end
+    ph = phrase.new(_("main = You are {ECONOMICAL_SITUATION}."))
+    print(ph:generate({ ECONOMICAL_SITUATION = s }))
+    -- ...snip...
+    if (cost < 10000) then
+       s = _("poor")
+    else
+       s = _("rich")
+    end
+    ph = phrase.new(_("main = You purchased a {ECONOMICAL_SITUATION} ship."))
+    print(ph:generate({ ECONOMICAL_SITUATION = s }))
+```
+If you use a format function, it might not be translatable. For example, this is not a translatable in Japanese by gettext:
+```
+    if (money < 10000) then
+       s = _("poor")
+    else
+       s = _("rich")
+    end
+    print(string.format(_("You are %s."), s))
+    -- ...snip...
+    if (cost < 10000) then
+       s = _("poor")
+    else
+       s = _("rich")
+    end
+    print(string.format(_("You purchased a %s ship."), s))
+```
+because gettext merges same words into a single entry, so "poor" can have a single translated word, but it should be translate into two different words. (so GNU gettext has pgettext() function.)
+
+In fact, this is the best way for the translation:
+```
+    if (money < 10000) then
+       s = _("You are poor.")
+    else
+       s = _("You are rich.")
+    end
+    print(s)
+    -- ...snip...
+    if (cost < 10000) then
+       s = _("You purchased a poor ship.")
+    else
+       s = _("You purchased a rich ship.")
+    end
+    print(s)
+```
+but it's not practical if the combination increases.
 
 # Requirement
 
