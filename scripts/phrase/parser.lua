@@ -706,7 +706,7 @@ function parse_pattern(it, sep, allow_empty)
       it:next()
    end
    if not allow_empty and pat == "" then
-      throw_parse_error(it, "The non-empty pattern is expected.")
+      throw_parse_error(it, "A nonempty pattern is expected.")
    end
    if it:eot() then
       throw_parse_error(it, "Unexpected EOT.")
