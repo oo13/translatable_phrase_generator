@@ -86,13 +86,12 @@ local new_input_iterator, skip_space_nl, parse_assignment
    Parser
    returns the data of the syntax and the error message ("" means no error is detected).
 
-   start = space_nl_opt, [ { assignment, space_nl_opt } ], $ ;
 --]]
 function parser.parse(text)
    local syntax = data.new_syntax()
    local err_msg = ""
    local it = new_input_iterator(text)
-   skip_space_nl(it)
+
    while not it:eot() do
       local result, retval = pcall(parse_assignment, it, syntax)
       if not result then
@@ -116,7 +115,6 @@ function parser.parse(text)
             end
          end
       end
-      skip_space_nl(it)
    end
 
    err_msg = err_msg .. syntax:fix_local_nonterminal()
@@ -265,9 +263,14 @@ local parse_nonterminal, parse_weight, parse_operator, parse_production_rule
 --[[
    Parse an assignment.
 
+   start = space_nl_opt, [ { assignment, space_nl_opt } ], $ ;
    assignment = nonterminal, space_opt, [ weight, space_opt ], operator, space_one_nl_opt, production_rule, ( nl | $ ) ; (* One of spaces before weight is necessary because nonterminal consumes the numeric character and the period. *)
 --]]
 function parse_assignment(it, syntax)
+   skip_space_nl(it)
+   if it:eot() then
+      return
+   end
    local nonterminal = parse_nonterminal(it)
    skip_space(it)
    local weight = parse_weight(it)

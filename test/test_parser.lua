@@ -421,6 +421,31 @@ function test_parser.run_test()
          string.find(error_messages, 'The nonterminal "A" is already defined.\n', 1, true)
    end
 
+   function tests.unclosed_comment_1()
+      local ph = phrase.new()
+      error_is_expected = true
+      ph:add([[
+         {*
+
+
+      ]])
+      local r = ph:generate()
+      return r == "nil" and
+         string.find(error_messages, 'The end of the comment is expected.\n', 1, true)
+   end
+
+   function tests.unclosed_comment_2()
+      local ph = phrase.new()
+      error_is_expected = true
+      ph:add([[
+         main = A
+         {*
+      ]])
+      local r = ph:generate()
+      return r == "nil" and
+         string.find(error_messages, 'The end of the comment is expected.\n', 1, true)
+   end
+
    return ut:runner("Parser Test", tests, { verbose = false })
 end
 
